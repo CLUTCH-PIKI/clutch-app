@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Link, Outlet } from 'react-router-dom'
 import HomeComponent from './components/HomeComponent'
-import './App.css'
 
 function Layout() {
   return (
