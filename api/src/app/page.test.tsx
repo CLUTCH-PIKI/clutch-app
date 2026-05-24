@@ -5,9 +5,9 @@ import Home from './page'
 // Mock next/image
 vi.mock('next/image', () => ({
   __esModule: true,
-  default: (props: any) => {
+  default: (props: { src: string; alt: string; fill?: boolean; priority?: boolean; width?: number; height?: number }) => {
     // eslint-disable-next-line @next/next/no-img-element
-    return <img {...props} fill={props.fill ? "true" : undefined} priority={props.priority ? "true" : undefined} />
+    return <img {...props} alt={props.alt} fill={props.fill ? "true" : undefined} priority={props.priority ? "true" : undefined} />
   },
 }))
 

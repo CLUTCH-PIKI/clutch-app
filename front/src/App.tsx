@@ -1,121 +1,66 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
+import { BrowserRouter as Router, Routes, Route, Link, Outlet } from 'react-router-dom'
+import HomeComponent from './components/HomeComponent'
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
-
+function Layout() {
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+    <div className="min-h-screen flex flex-col">
+      <header className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-800">
+        <div className="text-2xl font-bold text-gray-900 dark:text-white">
+          <Link to="/">Clutch</Link>
         </div>
+        <nav className="hidden md:flex items-center space-x-8">
+          <Link to="/" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">Accueil</Link>
+          <Link to="/loops" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">Loops</Link>
+          <Link to="/avis" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">Avis</Link>
+          <Link to="/marques" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">Marques</Link>
+          <Link to="/ugc" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">UGC</Link>
+        </nav>
         <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
+          <button className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-full font-medium transition-colors">
+            Connexion
+          </button>
         </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+      </header>
 
-      <div className="ticks"></div>
+      <main className="flex-grow container mx-auto px-4">
+        <Outlet />
+      </main>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+      <footer className="border-t border-gray-200 dark:border-gray-800 py-8">
+        <div className="container mx-auto px-4">
+          <nav className="flex justify-between items-center max-w-2xl mx-auto">
+            <Link to="/about" className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">À propos</Link>
+            <Link to="/contact" className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">Contact</Link>
+            <Link to="/legal" className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">Légal</Link>
+            <Link to="/privacy" className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">Confidentialité</Link>
+          </nav>
+          <div className="text-center mt-6 text-gray-400 text-sm">
+            © {new Date().getFullYear()} Clutch. Tous droits réservés.
+          </div>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+      </footer>
+    </div>
+  )
+}
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<HomeComponent />} />
+          <Route path="loops" element={<div className="py-20 text-center text-2xl">Page Loops en construction</div>} />
+          <Route path="avis" element={<div className="py-20 text-center text-2xl">Page Avis en construction</div>} />
+          <Route path="marques" element={<div className="py-20 text-center text-2xl">Page Marques en construction</div>} />
+          <Route path="ugc" element={<div className="py-20 text-center text-2xl">Page UGC en construction</div>} />
+          <Route path="about" element={<div className="py-20 text-center text-2xl">À propos de Clutch</div>} />
+          <Route path="contact" element={<div className="py-20 text-center text-2xl">Contactez-nous</div>} />
+          <Route path="legal" element={<div className="py-20 text-center text-2xl">Mentions Légales</div>} />
+          <Route path="privacy" element={<div className="py-20 text-center text-2xl">Politique de Confidentialité</div>} />
+        </Route>
+      </Routes>
+    </Router>
   )
 }
 
