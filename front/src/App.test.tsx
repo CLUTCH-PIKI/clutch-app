@@ -28,7 +28,9 @@ describe('App', () => {
 
   it('renders default home content', () => {
     render(<App />)
-    expect(screen.getByText(/Bienvenue sur Clutch/i)).toBeInTheDocument()
+    expect(screen.getByText(/Pourquoi Clutch \?/i)).toBeInTheDocument()
+    expect(screen.getByText(/Loop influencer/i)).toBeInTheDocument()
+    expect(screen.getByText(/Voir la selection/i)).toBeInTheDocument()
   })
 
   it('renders footer links', () => {
