@@ -1,0 +1,21 @@
+{
+  "name": "clutch-app",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev --workspace=api\" \"npm run dev --workspace=front\"",
+    "dev:api": "npm run dev --workspace=api",
+    "dev:front": "npm run dev --workspace=front",
+    "build": "npm run build --workspaces",
+    "lint": "npm run lint --workspaces",
+    "test": "npm run test --workspaces",
+    "install:all": "npm install && npm install --workspaces"
+  },
+  "workspaces": [
+    "api",
+    "front"
+  ],
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
