@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite --port 4000",
     "build": "tsc -b && vite build",
+    "build:staging": "tsc -b && vite build --mode staging",
+    "build:prod": "tsc -b && vite build --mode production",
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest",

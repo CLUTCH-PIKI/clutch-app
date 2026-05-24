@@ -31,9 +31,24 @@ npm run dev
 - **API**: [http://localhost:3000](http://localhost:3000)
 - **Front**: [http://localhost:4000](http://localhost:4000)
 
+### Environments
+The project uses different branches for environments:
+- `dev`: Development environment.
+- `staging`: Staging environment for pre-production testing.
+- `prod`: Production environment.
+
+Environment variables are managed via `.env.{environment}` files in each workspace.
+
+### Deployment
+Both apps are configured for deployment on **Netlify**.
+- **Front**: Uses `front/netlify.toml` (Vite SPA configuration).
+- **API**: Uses `api/netlify.toml` (Next.js with Netlify plugin).
+
 ### Utility Commands
 - `npm run dev:api`: Launch only the API.
 - `npm run dev:front`: Launch only the Front-end.
-- `npm run build`: Build both projects.
+- `npm run build`: Build both projects for development.
+- `npm run build:staging`: Build both projects for staging.
+- `npm run build:prod`: Build both projects for production.
 - `npm run lint`: Lint both projects.
 - `npm run test`: Run tests for both projects.
