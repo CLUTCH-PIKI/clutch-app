@@ -1,3 +1,5 @@
+import { userStore } from '../store/userStore';
+
 export interface User {
   id: string;
   email: string;
@@ -13,7 +15,9 @@ export interface User {
   dna?: {
     label: string;
     value: string;
+    type?: string;
     color: string;
+    options?: string[];
   }[];
   preferences?: Record<string, unknown>;
 }
@@ -44,6 +48,14 @@ export const userService = {
       const error = await response.json();
       throw new Error(error.error || 'Failed to update user');
     }
-    return response.json();
+    const updatedUser = await response.json();
+    
+    // Mettre à jour le store si l'utilisateur mis à jour est celui actuellement connecté
+    const currentUser = userStore.getState().user;
+    if (currentUser && currentUser.personalInfo.id === id) {
+      userStore.setUser(updatedUser);
+    }
+    
+    return updatedUser;
   },
 };

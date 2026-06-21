@@ -1,7 +1,8 @@
 import type { User } from './userService';
+import { userStore } from '../store/userStore';
+import type { UserStoreState } from '../store/userStore';
 
 const API_URL = 'http://localhost:3000/api';
-const AUTH_KEY = 'clutch_user';
 
 export const authService = {
   async login(credentials: Record<string, unknown>): Promise<User> {
@@ -15,25 +16,32 @@ export const authService = {
       throw new Error(error.error || 'Login failed');
     }
     const user = await response.json();
-    localStorage.setItem(AUTH_KEY, JSON.stringify(user));
+    userStore.setUser(user);
     return user;
   },
 
   logout() {
-    localStorage.removeItem(AUTH_KEY);
+    userStore.setUser(null);
   },
 
   getCurrentUser(): User | null {
-    const data = localStorage.getItem(AUTH_KEY);
-    if (!data) return null;
-    try {
-      return JSON.parse(data) as User;
-    } catch {
-      return null;
-    }
+    const state = userStore.getState();
+    if (!state.user) return null;
+    
+    // On reconstruit l'objet User plat si besoin, ou on adapte les appelants
+    // Pour la compatibilité, on renvoie un objet qui ressemble à User
+    return {
+      ...state.user.personalInfo,
+      dna: state.user.criteria.dna,
+      preferences: state.user.preferences.settings
+    } as User;
   },
 
   isAuthenticated(): boolean {
-    return this.getCurrentUser() !== null;
+    return userStore.getState().isAuthenticated;
+  },
+
+  subscribeToUserChanges(listener: (state: UserStoreState) => void) {
+    return userStore.subscribe(() => listener(userStore.getState()));
   }
 };

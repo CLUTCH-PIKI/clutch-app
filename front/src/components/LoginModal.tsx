@@ -5,7 +5,7 @@ import { userService } from '../services/userService';
 interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess: (isNewUser?: boolean) => void;
 }
 
 const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSuccess }) => {
@@ -26,11 +26,12 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSuccess }) =
     try {
       if (isLogin) {
         await authService.login({ email, password });
+        onSuccess();
       } else {
         await userService.createUser({ email, password, name });
         await authService.login({ email, password });
+        onSuccess(true);
       }
-      onSuccess();
       onClose();
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Une erreur est survenue';
@@ -41,59 +42,59 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSuccess }) =
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-      <div className="bg-white dark:bg-gray-900 rounded-2xl w-full max-w-md p-8 relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-clutch-black/80 backdrop-blur-md p-4">
+      <div className="bg-white dark:bg-[#1A1A1A] border-2 border-clutch-black dark:border-white w-full max-w-md p-10 relative">
         <button 
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+          className="absolute top-6 right-6 text-gray-400 hover:text-clutch-black dark:hover:text-white transition-colors"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
 
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-900 dark:text-white">
+        <h2 className="text-5xl font-black mb-12 text-center text-clutch-black dark:text-white uppercase tracking-tighter">
           {isLogin ? 'Connexion' : 'Inscription'}
         </h2>
 
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            {error}
+          <div className="border-l-4 border-clutch-coral bg-red-50 text-red-700 p-4 mb-8">
+            <p className="text-[10px] font-black uppercase tracking-widest">{error}</p>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-8">
           {!isLogin && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nom</label>
+              <label className="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 mb-2">Nom</label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                className="w-full px-0 py-3 bg-transparent border-b-2 border-gray-100 dark:border-gray-800 focus:border-clutch-black dark:focus:border-white outline-none transition-colors text-lg font-bold"
                 placeholder="Votre nom"
                 required={!isLogin}
               />
             </div>
           )}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
+            <label className="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 mb-2">Email</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+              className="w-full px-0 py-3 bg-transparent border-b-2 border-gray-100 dark:border-gray-800 focus:border-clutch-black dark:focus:border-white outline-none transition-colors text-lg font-bold"
               placeholder="votre@email.com"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Mot de passe</label>
+            <label className="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 mb-2">Mot de passe</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+              className="w-full px-0 py-3 bg-transparent border-b-2 border-gray-100 dark:border-gray-800 focus:border-clutch-black dark:focus:border-white outline-none transition-colors text-lg font-bold"
               placeholder="••••••••"
               required
             />
@@ -102,33 +103,33 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSuccess }) =
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg transition-colors disabled:opacity-50"
+            className="w-full clutch-button-primary mt-4 disabled:opacity-50"
           >
-            {loading ? 'Chargement...' : (isLogin ? 'Se connecter' : "S'inscrire")}
+            {loading ? 'CHARGEMENT...' : (isLogin ? 'SE CONNECTER' : "S'INSCRIRE")}
           </button>
         </form>
 
-        <div className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
+        <div className="mt-12 text-center">
           {isLogin ? (
-            <>
-              Pas encore de compte ?{' '}
+            <div className="flex flex-col gap-4">
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Pas encore de compte ?</span>
               <button 
                 onClick={() => setIsLogin(false)}
-                className="text-orange-500 hover:underline font-medium"
+                className="text-[11px] font-black text-clutch-black dark:text-white uppercase tracking-[0.2em] hover:text-clutch-coral transition-colors underline underline-offset-4"
               >
                 S'inscrire
               </button>
-            </>
+            </div>
           ) : (
-            <>
-              Déjà un compte ?{' '}
+            <div className="flex flex-col gap-4">
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Déjà un compte ?</span>
               <button 
                 onClick={() => setIsLogin(true)}
-                className="text-orange-500 hover:underline font-medium"
+                className="text-[11px] font-black text-clutch-black dark:text-white uppercase tracking-[0.2em] hover:text-clutch-coral transition-colors underline underline-offset-4"
               >
                 Se connecter
               </button>
-            </>
+            </div>
           )}
         </div>
       </div>

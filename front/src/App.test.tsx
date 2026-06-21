@@ -13,7 +13,7 @@ describe('App', () => {
     render(<App />)
     const loginButton = screen.getByRole('button', { name: /Connexion/i })
     expect(loginButton).toBeInTheDocument()
-    expect(loginButton).toHaveClass('bg-orange-500')
+    expect(loginButton).toHaveClass('clutch-button-primary')
   })
 
   it('renders navigation links in header', () => {

@@ -12,32 +12,25 @@ interface CritereFormProps {
 const CritereForm: React.FC<CritereFormProps> = ({ label, currentValue, options, color, onSave, onClose }) => {
   const [selected, setSelected] = useState(currentValue);
 
-  // Extraire les couleurs pour l'encart rond
-  const bgColor = color.split(' ')[0] || 'bg-gray-100';
-  const dotColor = color.split(' ')[1]?.replace('text-', 'bg-') || 'bg-gray-400';
-
   return (
-    <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl overflow-hidden max-w-md w-full animate-in fade-in zoom-in duration-300">
-      <div className="p-8">
-        <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-2 uppercase tracking-tight">Modifier {label}</h2>
-        <p className="text-gray-500 dark:text-gray-400 text-center text-sm mb-8">Sélectionnez la valeur qui vous correspond le mieux.</p>
+    <div className="bg-white dark:bg-[#1A1A1A] border-2 border-clutch-black dark:border-white max-w-lg w-full p-12">
+      <div className="flex flex-col">
+        <h2 className="text-5xl font-black text-center text-clutch-black dark:text-white mb-4 uppercase tracking-tighter">Modifier</h2>
+        <h3 className="text-xl font-bold text-center text-gray-400 mb-12 uppercase tracking-widest">{label}</h3>
 
-        <div className="space-y-3 mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-16">
           {options.map((option) => (
             <label 
               key={option}
-              className={`flex items-center justify-between p-4 rounded-2xl border-2 transition-all cursor-pointer ${
+              className={`flex items-center justify-between p-5 border transition-all cursor-pointer ${
                 selected === option 
-                ? 'border-orange-500 bg-orange-50/50 dark:bg-orange-900/20' 
-                : 'border-gray-100 dark:border-gray-800 hover:border-orange-200 dark:hover:border-orange-900/40'
+                ? 'border-clutch-coral bg-clutch-coral/5' 
+                : 'border-gray-100 dark:border-gray-800 hover:border-clutch-black dark:hover:border-white'
               }`}
             >
-              <div className="flex items-center gap-3">
-                {/* Encart rond coloré associé au critère */}
-                <div className={`w-6 h-6 rounded-full flex items-center justify-center ${bgColor}`}>
-                  <div className={`w-2 h-2 rounded-full ${dotColor}`}></div>
-                </div>
-                <span className={`font-semibold ${selected === option ? 'text-orange-600 dark:text-orange-400' : 'text-gray-700 dark:text-gray-300'}`}>
+              <div className="flex items-center gap-4">
+                <div className={`w-4 h-4 ${color.split(' ')[0]} opacity-50`}></div>
+                <span className={`text-xs font-black uppercase tracking-widest ${selected === option ? 'text-clutch-coral' : 'text-gray-400'}`}>
                   {option}
                 </span>
               </div>
@@ -48,25 +41,32 @@ const CritereForm: React.FC<CritereFormProps> = ({ label, currentValue, options,
                 value={option}
                 checked={selected === option}
                 onChange={() => setSelected(option)}
-                className="w-5 h-5 text-orange-500 focus:ring-orange-500 border-gray-300"
+                className="hidden"
               />
+              {selected === option && <span className="text-clutch-coral text-[10px]">●</span>}
             </label>
           ))}
         </div>
 
-        <div className="flex flex-col gap-3">
-          <button
-            onClick={() => onSave(selected)}
-            className="w-full py-4 bg-[#FF5A5F] text-white font-bold rounded-2xl shadow-[0_6px_0_0_#D14448] hover:translate-y-[1px] hover:shadow-[0_5px_0_0_#D14448] active:translate-y-[4px] active:shadow-none transition-all"
-          >
-            ENREGISTRER
-          </button>
-          <button
-            onClick={onClose}
-            className="w-full py-3 text-gray-500 dark:text-gray-400 font-bold hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
-          >
-            Annuler
-          </button>
+        <div className="border-t-2 border-gray-100 dark:border-gray-800 pt-10">
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-10 text-center leading-relaxed">
+            Vos données sont traitées avec sincérité et servent à affiner nos recommandations loops.
+          </p>
+          
+          <div className="flex flex-col md:flex-row gap-6">
+            <button
+              onClick={() => onSave(selected)}
+              className="flex-grow clutch-button-primary"
+            >
+              Enregistrer
+            </button>
+            <button
+              onClick={onClose}
+              className="flex-grow clutch-button-secondary"
+            >
+              Quitter
+            </button>
+          </div>
         </div>
       </div>
     </div>
