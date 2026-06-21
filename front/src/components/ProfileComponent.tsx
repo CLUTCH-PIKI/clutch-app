@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { authService } from '../services/authService';
 import { userService, type User } from '../services/userService';
+import Critere from './Critere';
 
 const ProfileComponent: React.FC = () => {
   const [user, setUser] = useState<User | null>(() => {
@@ -18,10 +19,34 @@ const ProfileComponent: React.FC = () => {
           { label: 'Points', value: '1.2k' }
         ],
         dna: [
-          { label: 'Type de peau', value: 'Mixte', color: 'bg-blue-100 text-blue-800' },
-          { label: 'Teint', value: 'Clair', color: 'bg-orange-100 text-orange-800' },
-          { label: 'Sensibilité', value: 'Haute', color: 'bg-red-100 text-red-800' },
-          { label: 'Sous-ton', value: 'Neutre', color: 'bg-gray-100 text-gray-800' }
+          { 
+            label: 'Type de peau', 
+            value: 'Mixte', 
+            type: 'Dermatologie', 
+            color: 'bg-blue-100 text-blue-800',
+            options: ['Sèche', 'Grasse', 'Mixte', 'Normale']
+          },
+          { 
+            label: 'Teint', 
+            value: 'Clair', 
+            type: 'Carnation', 
+            color: 'bg-orange-100 text-orange-800',
+            options: ['Très Clair', 'Clair', 'Médium', 'Mat', 'Foncé']
+          },
+          { 
+            label: 'Sensibilité', 
+            value: 'Haute', 
+            type: 'Tolérance', 
+            color: 'bg-red-100 text-red-800',
+            options: ['Faible', 'Moyenne', 'Haute', 'Très Haute']
+          },
+          { 
+            label: 'Sous-ton', 
+            value: 'Neutre', 
+            type: 'Colorimétrie', 
+            color: 'bg-gray-100 text-gray-800',
+            options: ['Chaud', 'Froid', 'Neutre']
+          }
         ]
       };
     }
@@ -60,6 +85,24 @@ const ProfileComponent: React.FC = () => {
           localStorage.setItem('clutch_user', JSON.stringify(updated));
         });
       }
+    }
+  };
+
+  const handleCritereUpdate = async (index: number, newValue: string) => {
+    if (!user || !user.dna) return;
+    
+    const newDna = [...user.dna];
+    newDna[index] = { ...newDna[index], value: newValue };
+    
+    try {
+      const updatedUser = await userService.updateUser(user.id, { dna: newDna });
+      setUser(updatedUser);
+      localStorage.setItem('clutch_user', JSON.stringify(updatedUser));
+      setMessage('Critère mis à jour avec succès !');
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Erreur lors de la mise à jour';
+      setMessage(`Erreur: ${errorMsg}`);
     }
   };
 
@@ -217,17 +260,17 @@ const ProfileComponent: React.FC = () => {
               </form>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {user.dna?.map((item, i) => (
-                <div key={i} className="flex flex-col p-4 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl shadow-sm">
-                  <span className="text-xs text-gray-500 dark:text-gray-400 uppercase font-semibold mb-2">{item.label}</span>
-                  <div className="flex items-center justify-between">
-                    <span className="text-lg font-bold text-gray-900 dark:text-white">{item.value}</span>
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${item.color.split(' ')[0]}`}>
-                       <div className={`w-3 h-3 rounded-full ${item.color.split(' ')[1].replace('text-', 'bg-')}`}></div>
-                    </div>
-                  </div>
-                </div>
+                <Critere
+                  key={i}
+                  label={item.label}
+                  value={item.value}
+                  type={item.type}
+                  color={item.color}
+                  options={item.options}
+                  onUpdate={(val) => handleCritereUpdate(i, val)}
+                />
               ))}
             </div>
           )}
