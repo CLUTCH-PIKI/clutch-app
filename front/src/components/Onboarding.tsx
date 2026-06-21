@@ -11,13 +11,13 @@ interface CriteriaData {
   skinConcerns: string[];
 }
 
-interface EditProfileProps {
+interface OnboardingProps {
   user: User;
   onSave: (updatedCriteria: CriteriaData) => Promise<void>;
   onClose: () => void;
 }
 
-const EditProfile: React.FC<EditProfileProps> = ({ user, onSave, onClose }) => {
+const Onboarding: React.FC<OnboardingProps> = ({ user, onSave, onClose }) => {
   // Initialisation des états avec les valeurs actuelles du user ou valeurs par défaut
   const [criteria, setCriteria] = useState<CriteriaData>(() => {
     const defaultCriteria = {
@@ -241,20 +241,32 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, onSave, onClose }) => {
           <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.3em] max-w-sm text-center md:text-left leading-relaxed">
             Clutch garantit la confidentialité de votre ADN beauté. Ces données sont utilisées exclusivement pour votre expérience.
           </p>
-          <div className="flex gap-6 w-full md:w-auto">
+          <div className="flex gap-6 w-full md:w-auto justify-center md:justify-end">
             <button
               onClick={onClose}
-              className="flex-grow md:flex-none clutch-button-secondary"
+              className="w-16 h-16 flex items-center justify-center border-2 border-clutch-coral bg-white text-clutch-coral hover:bg-clutch-coral hover:text-white dark:bg-clutch-black transition-all shadow-[4px_4px_0px_0px_rgba(255,90,95,0.3)] active:translate-x-1 active:translate-y-1 active:shadow-none"
+              title="Quitter"
             >
-              Quitter
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+              </svg>
             </button>
             <button
               onClick={handleSave}
               disabled={loading}
-              className="flex-grow md:flex-none clutch-button-primary bg-clutch-coral border-clutch-coral hover:bg-white hover:text-clutch-coral dark:hover:bg-clutch-black disabled:opacity-50"
-              style={{ boxShadow: '8px 8px 0px rgba(255, 90, 95, 0.2)' }}
+              className="w-16 h-16 flex items-center justify-center border-2 border-clutch-blue bg-white text-clutch-blue hover:bg-clutch-blue hover:text-white dark:bg-clutch-black disabled:opacity-50 transition-all shadow-[8px_8px_0px_rgba(168,218,220,0.3)] active:translate-x-1 active:translate-y-1 active:shadow-none"
+              title="Enregistrer"
             >
-              {loading ? 'CHARGEMENT...' : 'ENREGISTRER'}
+              {loading ? (
+                <svg className="animate-spin h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                </svg>
+              )}
             </button>
           </div>
         </div>
@@ -263,4 +275,4 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, onSave, onClose }) => {
   );
 };
 
-export default EditProfile;
+export default Onboarding;

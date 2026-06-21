@@ -42,7 +42,6 @@ const Critere: React.FC<CritereProps> = ({ label, value, type, color, borderColo
             label={label}
             currentValue={value}
             options={options}
-            color={color}
             onSave={async (val) => {
               await onUpdate(val);
               setIsModalOpen(false);
