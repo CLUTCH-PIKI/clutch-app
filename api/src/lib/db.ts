@@ -6,13 +6,16 @@ const db = new Database(dbPath);
 
 // Initialize database schema
 db.exec(`
-  DROP TABLE IF EXISTS users;
-  CREATE TABLE users (
+  CREATE TABLE IF NOT EXISTS users (
     id TEXT PRIMARY KEY,
     email TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
     name TEXT,
     bio TEXT,
+    location TEXT,
+    avatarUrl TEXT,
+    badges JSON,
+    stats JSON,
     criteria JSON,
     preferences JSON,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,

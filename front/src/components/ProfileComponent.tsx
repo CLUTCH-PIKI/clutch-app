@@ -14,60 +14,7 @@ const ProfileComponent: React.FC = () => {
   const location = useLocation();
   const locationState = location.state as ProfileLocationState;
 
-  const [user, setUser] = useState<User | null>(() => {
-    const currentUser = authService.getCurrentUser();
-    // Données fictives pour la démo si non présentes
-    if (currentUser && !currentUser.personalInfo.stats) {
-      const demoUser = {
-        ...currentUser,
-        personalInfo: {
-          ...currentUser.personalInfo,
-          location: currentUser.personalInfo.location || 'Paris, France',
-          badges: currentUser.personalInfo.badges || ['Expert Reviewer', 'Top 10%'],
-          stats: [
-            { label: 'Avis', value: 12 },
-            { label: 'Likes', value: 450 },
-            { label: 'Loops', value: 3 },
-            { label: 'Points', value: '1.2k' }
-          ],
-        },
-        criteria: {
-          criteria: [
-            { 
-              label: 'Type de peau', 
-              value: 'Mixte', 
-              type: 'Dermatologie', 
-              color: 'bg-blue-100 text-blue-800',
-              options: ['Sèche', 'Grasse', 'Mixte', 'Normale']
-            },
-            { 
-              label: 'Teint', 
-              value: 'Clair', 
-              type: 'Carnation', 
-              color: 'bg-orange-100 text-orange-800',
-              options: ['Très Clair', 'Clair', 'Médium', 'Mat', 'Foncé']
-            },
-            { 
-              label: 'Sensibilité', 
-              value: 'Haute', 
-              type: 'Tolérance', 
-              color: 'bg-red-100 text-red-800',
-              options: ['Faible', 'Moyenne', 'Haute', 'Très Haute']
-            },
-            { 
-              label: 'Sous-ton', 
-              value: 'Neutre', 
-              type: 'Colorimétrie', 
-              color: 'bg-gray-100 text-gray-800',
-              options: ['Chaud', 'Froid', 'Neutre']
-            }
-          ]
-        }
-      };
-      return demoUser;
-    }
-    return currentUser;
-  });
+  const [user, setUser] = useState<User | null>(() => authService.getCurrentUser());
   const [name, setName] = useState(user?.personalInfo.name || '');
   const [bio, setBio] = useState(user?.personalInfo.bio || '');
   const [isEditing, setIsEditing] = useState(false);

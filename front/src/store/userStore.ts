@@ -50,12 +50,17 @@ export const transformToStoreUser = (apiUser: Record<string, unknown>): User => 
     personalInfo: {
       id: apiUser.id as string,
       email: apiUser.email as string,
-      name: apiUser.name as string,
-      bio: apiUser.bio as string,
-      location: apiUser.location as string,
-      avatarUrl: apiUser.avatarUrl as string,
-      badges: apiUser.badges as string[],
-      stats: apiUser.stats as PersonalInfo['stats'],
+      name: (apiUser.name as string) || '',
+      bio: (apiUser.bio as string) || '',
+      location: (apiUser.location as string) || 'Paris, France',
+      avatarUrl: (apiUser.avatarUrl as string) || 'https://via.placeholder.com/300x400?text=Profile+Photo',
+      badges: (apiUser.badges as string[]) || ['Membre Clutch'],
+      stats: (apiUser.stats as PersonalInfo['stats']) || [
+        { label: 'Avis', value: 0 },
+        { label: 'Likes', value: 0 },
+        { label: 'Loops', value: 0 },
+        { label: 'Points', value: 0 }
+      ],
     },
     criteria: {
       criteria: Array.isArray(apiUser.criteria) 

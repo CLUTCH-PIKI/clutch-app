@@ -7,7 +7,11 @@ export interface User {
   password?: string;
   name?: string;
   bio?: string;
-  criteria?: Record<string, unknown>;
+  location?: string;
+  avatarUrl?: string;
+  badges?: string[];
+  stats?: { label: string; value: number | string }[];
+  criteria?: Record<string, unknown> | any[];
   preferences?: Record<string, unknown>;
   created_at?: string;
   updated_at?: string;
@@ -16,10 +20,10 @@ export interface User {
 export class UserRepository {
   static createUser(user: Omit<User, 'id'>): User {
     const id = uuidv4();
-    const { email, password, name, bio, criteria, preferences } = user;
+    const { email, password, name, bio, location, avatarUrl, badges, stats, criteria, preferences } = user;
     const stmt = db.prepare(`
-      INSERT INTO users (id, email, password, name, bio, criteria, preferences)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO users (id, email, password, name, bio, location, avatarUrl, badges, stats, criteria, preferences)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
     stmt.run(
       id, 
@@ -27,6 +31,10 @@ export class UserRepository {
       password, 
       name, 
       bio, 
+      location || null,
+      avatarUrl || null,
+      badges ? JSON.stringify(badges) : null,
+      stats ? JSON.stringify(stats) : null,
       criteria ? JSON.stringify(criteria) : null,
       preferences ? JSON.stringify(preferences) : null
     );
@@ -35,20 +43,12 @@ export class UserRepository {
 
   static findByEmail(email: string): User | null {
     const stmt = db.prepare('SELECT * FROM users WHERE email = ?');
-    const user = stmt.get(email) as {
-      id: string;
-      email: string;
-      password?: string;
-      name?: string;
-      bio?: string;
-      criteria?: string;
-      preferences?: string;
-      created_at?: string;
-      updated_at?: string;
-    } | undefined;
+    const user = stmt.get(email) as any;
     if (!user) return null;
     return {
       ...user,
+      badges: user.badges ? JSON.parse(user.badges) : undefined,
+      stats: user.stats ? JSON.parse(user.stats) : undefined,
       criteria: user.criteria ? JSON.parse(user.criteria) : undefined,
       preferences: user.preferences ? JSON.parse(user.preferences) : undefined
     };
@@ -56,20 +56,12 @@ export class UserRepository {
 
   static findById(id: string): User | null {
     const stmt = db.prepare('SELECT * FROM users WHERE id = ?');
-    const user = stmt.get(id) as {
-      id: string;
-      email: string;
-      password?: string;
-      name?: string;
-      bio?: string;
-      criteria?: string;
-      preferences?: string;
-      created_at?: string;
-      updated_at?: string;
-    } | undefined;
+    const user = stmt.get(id) as any;
     if (!user) return null;
     return {
       ...user,
+      badges: user.badges ? JSON.parse(user.badges) : undefined,
+      stats: user.stats ? JSON.parse(user.stats) : undefined,
       criteria: user.criteria ? JSON.parse(user.criteria) : undefined,
       preferences: user.preferences ? JSON.parse(user.preferences) : undefined
     };
@@ -79,9 +71,10 @@ export class UserRepository {
     const fields = Object.keys(updates);
     if (fields.length === 0) return this.findById(id);
 
+    const jsonFields = ['preferences', 'criteria', 'badges', 'stats'];
     const setClause = fields.map(field => `${field} = ?`).join(', ');
     const values = fields.map(field => {
-      if (field === 'preferences' || field === 'criteria') return JSON.stringify(updates[field as keyof typeof updates]);
+      if (jsonFields.includes(field)) return JSON.stringify(updates[field as keyof typeof updates]);
       return updates[field as keyof typeof updates];
     });
 

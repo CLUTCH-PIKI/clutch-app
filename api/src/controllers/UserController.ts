@@ -5,7 +5,7 @@ export class UserController {
   static async createUser(request: Request) {
     try {
       const body = await request.json();
-      const { email, password, name } = body;
+      const { email, password } = body;
 
       if (!email || !password) {
         return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });
@@ -16,7 +16,7 @@ export class UserController {
         return NextResponse.json({ error: 'User already exists' }, { status: 409 });
       }
 
-      const user = UserRepository.createUser({ email, password, name });
+      const user = UserRepository.createUser(body);
       
       const { password: _, ...userWithoutPassword } = user;
       void _;
