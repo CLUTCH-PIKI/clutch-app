@@ -1,4 +1,3 @@
-import type { User } from '../services/userService';
 
 export interface PersonalInfo {
   id: string;
@@ -15,7 +14,7 @@ export interface PersonalInfo {
 }
 
 export interface UserCriteria {
-  dna?: {
+  criteria?: {
     label: string;
     value: string;
     type?: string;
@@ -30,38 +29,42 @@ export interface UserPreferences {
   theme?: 'light' | 'dark';
 }
 
+export interface User {
+  personalInfo: PersonalInfo;
+  preferences: UserPreferences;
+  criteria: UserCriteria;
+}
+
 export interface UserStoreState {
-  user: {
-    personalInfo: PersonalInfo;
-    preferences: UserPreferences;
-    criteria: UserCriteria;
-  } | null;
+  user: User | null;
   isAuthenticated: boolean;
 }
 
 const AUTH_KEY = 'clutch_user';
 
 // Helper pour transformer l'objet User plat de l'API vers notre structure de store
-export const transformToStoreUser = (user: User): UserStoreState['user'] => {
-  if (!user) return null;
+export const transformToStoreUser = (apiUser: Record<string, unknown>): User => {
+  if (!apiUser) return null as unknown as User;
   
   return {
     personalInfo: {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      bio: user.bio,
-      location: user.location,
-      avatarUrl: user.avatarUrl,
-      badges: user.badges,
-      stats: user.stats,
+      id: apiUser.id as string,
+      email: apiUser.email as string,
+      name: apiUser.name as string,
+      bio: apiUser.bio as string,
+      location: apiUser.location as string,
+      avatarUrl: apiUser.avatarUrl as string,
+      badges: apiUser.badges as string[],
+      stats: apiUser.stats as PersonalInfo['stats'],
     },
     criteria: {
-      dna: user.dna,
+      criteria: Array.isArray(apiUser.criteria) 
+        ? apiUser.criteria as UserCriteria['criteria']
+        : (apiUser.criteria as Record<string, unknown>)?.criteria as UserCriteria['criteria'] || [],
     },
     preferences: {
-      settings: (user.preferences as Record<string, unknown>) || {},
-      theme: (user.preferences?.theme as 'light' | 'dark') || 'light',
+      settings: (apiUser.preferences as Record<string, unknown>) || (apiUser.settings as Record<string, unknown>) || {},
+      theme: ((apiUser.preferences as Record<string, unknown>)?.theme as 'light' | 'dark') || ((apiUser.preferences as Record<string, unknown>) as { theme?: 'light' | 'dark' })?.theme || 'light',
     }
   };
 };
@@ -84,8 +87,8 @@ class UserStore {
     const data = localStorage.getItem(AUTH_KEY);
     if (data) {
       try {
-        const user = JSON.parse(data) as User;
-        this.state.user = transformToStoreUser(user);
+        const apiUser = JSON.parse(data);
+        this.state.user = transformToStoreUser(apiUser);
         this.state.isAuthenticated = true;
       } catch (e) {
         console.error('Failed to load user from storage', e);
@@ -97,11 +100,11 @@ class UserStore {
     return { ...this.state };
   }
 
-  setUser(user: User | null) {
-    if (user) {
-      this.state.user = transformToStoreUser(user);
+  setUser(apiUser: Record<string, unknown> | null) {
+    if (apiUser) {
+      this.state.user = transformToStoreUser(apiUser);
       this.state.isAuthenticated = true;
-      localStorage.setItem(AUTH_KEY, JSON.stringify(user));
+      localStorage.setItem(AUTH_KEY, JSON.stringify(apiUser));
     } else {
       this.state.user = null;
       this.state.isAuthenticated = false;

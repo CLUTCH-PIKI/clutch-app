@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { type User } from '../services/userService';
+import { type User } from '../store/userStore';
 
-interface DnaData {
+interface CriteriaData {
   ageRange: string;
   monthlyBudget: string;
   phenotype: string;
@@ -13,14 +13,14 @@ interface DnaData {
 
 interface EditProfileProps {
   user: User;
-  onSave: (updatedDna: DnaData) => Promise<void>;
+  onSave: (updatedCriteria: CriteriaData) => Promise<void>;
   onClose: () => void;
 }
 
-const EditProfile: React.FC<EditProfileProps> = ({ onSave, onClose }) => {
+const EditProfile: React.FC<EditProfileProps> = ({ user, onSave, onClose }) => {
   // Initialisation des états avec les valeurs actuelles du user ou valeurs par défaut
-  const [dna, setDna] = useState<DnaData>(() => {
-    const defaultDna = {
+  const [criteria, setCriteria] = useState<CriteriaData>(() => {
+    const defaultCriteria = {
       ageRange: '25-34',
       monthlyBudget: '50€ - 100€',
       phenotype: 'Médium',
@@ -30,9 +30,29 @@ const EditProfile: React.FC<EditProfileProps> = ({ onSave, onClose }) => {
       skinConcerns: ['Hydratation']
     };
     
-    // Tentative de récupération depuis user.dna si structuré différemment
-    // Pour l'instant on simule avec les data de l'issue
-    return { ...defaultDna }; 
+    const userCriteria = user.criteria.criteria;
+
+    // Tentative de récupération depuis user.criteria si structuré comme CriteriaData
+    if (userCriteria && !Array.isArray(userCriteria)) {
+      return { ...defaultCriteria, ...userCriteria as unknown as CriteriaData };
+    }
+    
+    // Si c'est l'ancien format (tableau), on essaie de mapper
+    if (Array.isArray(userCriteria)) {
+      const mapped: Partial<CriteriaData> = {};
+      userCriteria.forEach(item => {
+        if (item.label === 'Tranche d\'âge') mapped.ageRange = item.value;
+        if (item.label === 'Budget') mapped.monthlyBudget = item.value;
+        if (item.label === 'Phénotype') mapped.phenotype = item.value;
+        if (item.label === 'Type Cheveux') mapped.hairType = item.value;
+        if (item.label === 'Couleur Cheveux') mapped.hairColor = item.value;
+        if (item.label === 'Style Maquillage') mapped.makeupStyle = item.value;
+        if (item.label === 'Problématiques') mapped.skinConcerns = item.value.split(', ');
+      });
+      return { ...defaultCriteria, ...mapped };
+    }
+
+    return { ...defaultCriteria }; 
   });
 
   const ageOptions = ['18-24', '25-34', '35-44', '45+'];
@@ -56,7 +76,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ onSave, onClose }) => {
   const skinConcernOptions = ['Hydratation', 'Anti-âge', 'Éclat', 'Imperfections', 'Sensibilité', 'Taches', 'Pores'];
 
   const toggleSkinConcern = (concern: string) => {
-    setDna(prev => ({
+    setCriteria(prev => ({
       ...prev,
       skinConcerns: prev.skinConcerns.includes(concern)
         ? prev.skinConcerns.filter(c => c !== concern)
@@ -69,7 +89,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ onSave, onClose }) => {
   const handleSave = async () => {
     setLoading(true);
     try {
-      await onSave(dna);
+      await onSave(criteria);
     } finally {
       setLoading(false);
     }
@@ -90,9 +110,9 @@ const EditProfile: React.FC<EditProfileProps> = ({ onSave, onClose }) => {
             {ageOptions.map(option => (
               <button
                 key={option}
-                onClick={() => setDna({ ...dna, ageRange: option })}
+                onClick={() => setCriteria({ ...criteria, ageRange: option })}
                 className={`py-4 border-2 font-bold text-xs uppercase tracking-widest transition-all ${
-                  dna.ageRange === option 
+                  criteria.ageRange === option 
                   ? 'border-clutch-black dark:border-white bg-clutch-black text-white dark:bg-white dark:text-clutch-black' 
                   : 'border-gray-100 dark:border-gray-800 text-gray-400 hover:border-gray-200'
                 }`}
@@ -110,12 +130,12 @@ const EditProfile: React.FC<EditProfileProps> = ({ onSave, onClose }) => {
             {budgetOptions.map(option => (
               <div 
                 key={option}
-                onClick={() => setDna({ ...dna, monthlyBudget: option })}
+                onClick={() => setCriteria({ ...criteria, monthlyBudget: option })}
                 className="flex items-center justify-between group cursor-pointer"
               >
-                <span className={`text-xs font-bold uppercase tracking-widest transition-colors ${dna.monthlyBudget === option ? 'text-clutch-black dark:text-white' : 'text-gray-400'}`}>Investissement</span>
-                <div className={`flex-grow mx-4 border-b border-dotted ${dna.monthlyBudget === option ? 'border-clutch-black dark:border-white' : 'border-gray-200'}`}></div>
-                <span className={`text-xs font-black uppercase tracking-widest transition-colors ${dna.monthlyBudget === option ? 'text-clutch-coral' : 'text-gray-400'}`}>{option}</span>
+                <span className={`text-xs font-bold uppercase tracking-widest transition-colors ${criteria.monthlyBudget === option ? 'text-clutch-black dark:text-white' : 'text-gray-400'}`}>Investissement</span>
+                <div className={`flex-grow mx-4 border-b border-dotted ${criteria.monthlyBudget === option ? 'border-clutch-black dark:border-white' : 'border-gray-200'}`}></div>
+                <span className={`text-xs font-black uppercase tracking-widest transition-colors ${criteria.monthlyBudget === option ? 'text-clutch-coral' : 'text-gray-400'}`}>{option}</span>
               </div>
             ))}
           </div>
@@ -128,15 +148,15 @@ const EditProfile: React.FC<EditProfileProps> = ({ onSave, onClose }) => {
             {phenotypeOptions.map(opt => (
               <button
                 key={opt.name}
-                onClick={() => setDna({ ...dna, phenotype: opt.name })}
+                onClick={() => setCriteria({ ...criteria, phenotype: opt.name })}
                 className="group flex flex-col items-center"
               >
                 <div 
-                  className={`w-full aspect-square border-2 mb-2 transition-all ${dna.phenotype === opt.name ? 'border-clutch-black dark:border-white p-1' : 'border-transparent group-hover:border-gray-200'}`}
+                  className={`w-full aspect-square border-2 mb-2 transition-all ${criteria.phenotype === opt.name ? 'border-clutch-black dark:border-white p-1' : 'border-transparent group-hover:border-gray-200'}`}
                 >
                   <div className="w-full h-full" style={{ backgroundColor: opt.color }}></div>
                 </div>
-                <span className={`text-[9px] font-black uppercase tracking-widest ${dna.phenotype === opt.name ? 'text-clutch-black dark:text-white' : 'text-gray-400'}`}>
+                <span className={`text-[9px] font-black uppercase tracking-widest ${criteria.phenotype === opt.name ? 'text-clutch-black dark:text-white' : 'text-gray-400'}`}>
                   {opt.name}
                 </span>
               </button>
@@ -151,9 +171,9 @@ const EditProfile: React.FC<EditProfileProps> = ({ onSave, onClose }) => {
             {hairTypeOptions.map(option => (
               <button
                 key={option}
-                onClick={() => setDna({ ...dna, hairType: option })}
+                onClick={() => setCriteria({ ...criteria, hairType: option })}
                 className={`py-4 border-2 font-bold text-xs uppercase tracking-widest transition-all ${
-                  dna.hairType === option 
+                  criteria.hairType === option 
                   ? 'border-clutch-black dark:border-white bg-clutch-black text-white dark:bg-white dark:text-clutch-black' 
                   : 'border-gray-100 dark:border-gray-800 text-gray-400 hover:border-gray-200'
                 }`}
@@ -171,15 +191,15 @@ const EditProfile: React.FC<EditProfileProps> = ({ onSave, onClose }) => {
             {hairColorOptions.map(opt => (
               <button
                 key={opt.name}
-                onClick={() => setDna({ ...dna, hairColor: opt.name })}
+                onClick={() => setCriteria({ ...criteria, hairColor: opt.name })}
                 className={`flex items-center gap-4 p-4 border-2 transition-all ${
-                  dna.hairColor === opt.name 
+                  criteria.hairColor === opt.name 
                   ? 'border-clutch-black dark:border-white bg-gray-50 dark:bg-gray-900' 
                   : 'border-gray-100 dark:border-gray-800 hover:border-gray-200'
                 }`}
               >
                 <div className="w-6 h-6 shrink-0" style={{ backgroundColor: opt.color }}></div>
-                <span className={`text-[10px] font-bold uppercase tracking-widest ${dna.hairColor === opt.name ? 'text-clutch-black dark:text-white' : 'text-gray-400'}`}>
+                <span className={`text-[10px] font-bold uppercase tracking-widest ${criteria.hairColor === opt.name ? 'text-clutch-black dark:text-white' : 'text-gray-400'}`}>
                   {opt.name}
                 </span>
               </button>
@@ -194,9 +214,9 @@ const EditProfile: React.FC<EditProfileProps> = ({ onSave, onClose }) => {
             {makeupOptions.map(option => (
               <button
                 key={option}
-                onClick={() => setDna({ ...dna, makeupStyle: option })}
+                onClick={() => setCriteria({ ...criteria, makeupStyle: option })}
                 className={`px-8 py-4 border-2 font-bold text-xs uppercase tracking-widest transition-all ${
-                  dna.makeupStyle === option 
+                  criteria.makeupStyle === option 
                   ? 'border-clutch-black dark:border-white bg-clutch-black text-white dark:bg-white dark:text-clutch-black' 
                   : 'border-gray-100 dark:border-gray-800 text-gray-400 hover:border-gray-200'
                 }`}
@@ -216,7 +236,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ onSave, onClose }) => {
                 key={option}
                 onClick={() => toggleSkinConcern(option)}
                 className={`px-6 py-2 border font-black text-[9px] uppercase tracking-[0.2em] transition-all ${
-                  dna.skinConcerns.includes(option)
+                  criteria.skinConcerns.includes(option)
                   ? 'border-clutch-coral bg-clutch-coral text-white'
                   : 'border-gray-200 text-gray-400 hover:border-clutch-coral hover:text-clutch-coral'
                 }`}

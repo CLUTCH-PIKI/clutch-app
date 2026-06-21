@@ -7,6 +7,7 @@ export interface User {
   password?: string;
   name?: string;
   bio?: string;
+  criteria?: Record<string, unknown>;
   preferences?: Record<string, unknown>;
   created_at?: string;
   updated_at?: string;
@@ -15,12 +16,20 @@ export interface User {
 export class UserRepository {
   static createUser(user: Omit<User, 'id'>): User {
     const id = uuidv4();
-    const { email, password, name, bio, preferences } = user;
+    const { email, password, name, bio, criteria, preferences } = user;
     const stmt = db.prepare(`
-      INSERT INTO users (id, email, password, name, bio, preferences)
-      VALUES (?, ?, ?, ?, ?, ?)
+      INSERT INTO users (id, email, password, name, bio, criteria, preferences)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
     `);
-    stmt.run(id, email, password, name, bio, preferences ? JSON.stringify(preferences) : null);
+    stmt.run(
+      id, 
+      email, 
+      password, 
+      name, 
+      bio, 
+      criteria ? JSON.stringify(criteria) : null,
+      preferences ? JSON.stringify(preferences) : null
+    );
     return this.findById(id)!;
   }
 
@@ -32,6 +41,7 @@ export class UserRepository {
       password?: string;
       name?: string;
       bio?: string;
+      criteria?: string;
       preferences?: string;
       created_at?: string;
       updated_at?: string;
@@ -39,6 +49,7 @@ export class UserRepository {
     if (!user) return null;
     return {
       ...user,
+      criteria: user.criteria ? JSON.parse(user.criteria) : undefined,
       preferences: user.preferences ? JSON.parse(user.preferences) : undefined
     };
   }
@@ -51,6 +62,7 @@ export class UserRepository {
       password?: string;
       name?: string;
       bio?: string;
+      criteria?: string;
       preferences?: string;
       created_at?: string;
       updated_at?: string;
@@ -58,6 +70,7 @@ export class UserRepository {
     if (!user) return null;
     return {
       ...user,
+      criteria: user.criteria ? JSON.parse(user.criteria) : undefined,
       preferences: user.preferences ? JSON.parse(user.preferences) : undefined
     };
   }
@@ -68,7 +81,7 @@ export class UserRepository {
 
     const setClause = fields.map(field => `${field} = ?`).join(', ');
     const values = fields.map(field => {
-      if (field === 'preferences') return JSON.stringify(updates[field as keyof typeof updates]);
+      if (field === 'preferences' || field === 'criteria') return JSON.stringify(updates[field as keyof typeof updates]);
       return updates[field as keyof typeof updates];
     });
 

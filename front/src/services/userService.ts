@@ -1,31 +1,9 @@
 import { userStore } from '../store/userStore';
 
-export interface User {
-  id: string;
-  email: string;
-  name?: string;
-  bio?: string;
-  location?: string;
-  avatarUrl?: string;
-  badges?: string[];
-  stats?: {
-    label: string;
-    value: number | string;
-  }[];
-  dna?: {
-    label: string;
-    value: string;
-    type?: string;
-    color: string;
-    options?: string[];
-  }[];
-  preferences?: Record<string, unknown>;
-}
-
 const API_URL = 'http://localhost:3000/api';
 
 export const userService = {
-  async createUser(userData: Record<string, unknown>): Promise<User> {
+  async createUser(userData: Record<string, unknown>): Promise<Record<string, unknown>> {
     const response = await fetch(`${API_URL}/users`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -38,7 +16,7 @@ export const userService = {
     return response.json();
   },
 
-  async updateUser(id: string, updates: Record<string, unknown>): Promise<User> {
+  async updateUser(id: string, updates: Record<string, unknown>): Promise<Record<string, unknown>> {
     const response = await fetch(`${API_URL}/users`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },

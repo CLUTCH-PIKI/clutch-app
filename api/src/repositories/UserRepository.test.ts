@@ -34,21 +34,25 @@ describe('UserRepository', () => {
     expect(found?.email).toBe('find@example.com');
   });
 
-  it('should update a user', () => {
+  it('should update a user including criteria', () => {
     const user = UserRepository.createUser({
       email: 'update@example.com',
       password: 'password'
     });
 
+    const criteria = [{ label: 'Age', value: '25' }];
     const updated = UserRepository.updateUser(user.id, {
       name: 'Updated Name',
-      bio: 'New bio'
+      bio: 'New bio',
+      criteria
     });
 
     expect(updated?.name).toBe('Updated Name');
     expect(updated?.bio).toBe('New bio');
+    expect(updated?.criteria).toEqual(criteria);
 
     const fresh = UserRepository.findById(user.id);
     expect(fresh?.name).toBe('Updated Name');
+    expect(fresh?.criteria).toEqual(criteria);
   });
 });

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { authService } from '../services/authService';
-import { userService, type User } from '../services/userService';
+import { userService } from '../services/userService';
+import { type User } from '../store/userStore';
 import Critere from './Critere';
 import EditProfile from './EditProfile';
 
@@ -16,59 +17,62 @@ const ProfileComponent: React.FC = () => {
   const [user, setUser] = useState<User | null>(() => {
     const currentUser = authService.getCurrentUser();
     // Données fictives pour la démo si non présentes
-    if (currentUser && !currentUser.stats) {
+    if (currentUser && !currentUser.personalInfo.stats) {
       const demoUser = {
         ...currentUser,
-        location: currentUser.location || 'Paris, France',
-        badges: currentUser.badges || ['Expert Reviewer', 'Top 10%'],
-        stats: [
-          { label: 'Avis', value: 12 },
-          { label: 'Likes', value: 450 },
-          { label: 'Loops', value: 3 },
-          { label: 'Points', value: '1.2k' }
-        ],
-        dna: [
-          { 
-            label: 'Type de peau', 
-            value: 'Mixte', 
-            type: 'Dermatologie', 
-            color: 'bg-blue-100 text-blue-800',
-            options: ['Sèche', 'Grasse', 'Mixte', 'Normale']
-          },
-          { 
-            label: 'Teint', 
-            value: 'Clair', 
-            type: 'Carnation', 
-            color: 'bg-orange-100 text-orange-800',
-            options: ['Très Clair', 'Clair', 'Médium', 'Mat', 'Foncé']
-          },
-          { 
-            label: 'Sensibilité', 
-            value: 'Haute', 
-            type: 'Tolérance', 
-            color: 'bg-red-100 text-red-800',
-            options: ['Faible', 'Moyenne', 'Haute', 'Très Haute']
-          },
-          { 
-            label: 'Sous-ton', 
-            value: 'Neutre', 
-            type: 'Colorimétrie', 
-            color: 'bg-gray-100 text-gray-800',
-            options: ['Chaud', 'Froid', 'Neutre']
-          }
-        ]
+        personalInfo: {
+          ...currentUser.personalInfo,
+          location: currentUser.personalInfo.location || 'Paris, France',
+          badges: currentUser.personalInfo.badges || ['Expert Reviewer', 'Top 10%'],
+          stats: [
+            { label: 'Avis', value: 12 },
+            { label: 'Likes', value: 450 },
+            { label: 'Loops', value: 3 },
+            { label: 'Points', value: '1.2k' }
+          ],
+        },
+        criteria: {
+          criteria: [
+            { 
+              label: 'Type de peau', 
+              value: 'Mixte', 
+              type: 'Dermatologie', 
+              color: 'bg-blue-100 text-blue-800',
+              options: ['Sèche', 'Grasse', 'Mixte', 'Normale']
+            },
+            { 
+              label: 'Teint', 
+              value: 'Clair', 
+              type: 'Carnation', 
+              color: 'bg-orange-100 text-orange-800',
+              options: ['Très Clair', 'Clair', 'Médium', 'Mat', 'Foncé']
+            },
+            { 
+              label: 'Sensibilité', 
+              value: 'Haute', 
+              type: 'Tolérance', 
+              color: 'bg-red-100 text-red-800',
+              options: ['Faible', 'Moyenne', 'Haute', 'Très Haute']
+            },
+            { 
+              label: 'Sous-ton', 
+              value: 'Neutre', 
+              type: 'Colorimétrie', 
+              color: 'bg-gray-100 text-gray-800',
+              options: ['Chaud', 'Froid', 'Neutre']
+            }
+          ]
+        }
       };
-      // On met à jour le store avec ces données de démo pour la cohérence
-      import('../store/userStore').then(({ userStore }) => userStore.setUser(demoUser));
       return demoUser;
     }
     return currentUser;
   });
-  const [name, setName] = useState(user?.name || '');
-  const [bio, setBio] = useState(user?.bio || '');
+  const [name, setName] = useState(user?.personalInfo.name || '');
+  const [bio, setBio] = useState(user?.personalInfo.bio || '');
   const [isEditing, setIsEditing] = useState(false);
   const [message, setMessage] = useState('');
-  const [avatarUrl, setAvatarUrl] = useState(user?.avatarUrl || 'https://via.placeholder.com/300x400?text=Profile+Photo');
+  const [avatarUrl, setAvatarUrl] = useState(user?.personalInfo.avatarUrl || 'https://via.placeholder.com/300x400?text=Profile+Photo');
   const [isEditingDna, setIsEditingDna] = useState(() => {
     return !!(locationState && locationState.openEditProfile);
   });
@@ -82,16 +86,10 @@ const ProfileComponent: React.FC = () => {
     // S'abonner aux changements du store pour garder l'état local synchronisé
     const unsubscribe = authService.subscribeToUserChanges((userState) => {
       if (userState.user) {
-        // Reconstruire l'objet User plat
-        const flatUser: User = {
-          ...userState.user.personalInfo,
-          dna: userState.user.criteria.dna,
-          preferences: userState.user.preferences.settings
-        } as User;
-        setUser(flatUser);
-        setName(flatUser.name || '');
-        setBio(flatUser.bio || '');
-        setAvatarUrl(flatUser.avatarUrl || 'https://via.placeholder.com/300x400?text=Profile+Photo');
+        setUser(userState.user);
+        setName(userState.user.personalInfo.name || '');
+        setBio(userState.user.personalInfo.bio || '');
+        setAvatarUrl(userState.user.personalInfo.avatarUrl || 'https://via.placeholder.com/300x400?text=Profile+Photo');
       }
     });
 
@@ -103,8 +101,7 @@ const ProfileComponent: React.FC = () => {
     if (!user) return;
 
     try {
-      const updatedUser = await userService.updateUser(user.id, { name, bio, avatarUrl });
-      setUser(updatedUser);
+      await userService.updateUser(user.personalInfo.id, { name, bio, avatarUrl });
       setIsEditing(false);
       setMessage('Profil mis à jour avec succès !');
       setTimeout(() => setMessage(''), 3000);
@@ -119,24 +116,19 @@ const ProfileComponent: React.FC = () => {
     if (newUrl) {
       setAvatarUrl(newUrl);
       if (user) {
-        userService.updateUser(user.id, { avatarUrl: newUrl }).then(updated => {
-          setUser(updated);
-          localStorage.setItem('clutch_user', JSON.stringify(updated));
-        });
+        userService.updateUser(user.personalInfo.id, { avatarUrl: newUrl });
       }
     }
   };
 
   const handleCritereUpdate = async (index: number, newValue: string) => {
-    if (!user || !user.dna) return;
+    if (!user || !user.criteria.criteria) return;
     
-    const newDna = [...user.dna];
-    newDna[index] = { ...newDna[index], value: newValue };
+    const newCriteria = [...user.criteria.criteria];
+    newCriteria[index] = { ...newCriteria[index], value: newValue };
     
     try {
-      const updatedUser = await userService.updateUser(user.id, { dna: newDna });
-      setUser(updatedUser);
-      localStorage.setItem('clutch_user', JSON.stringify(updatedUser));
+      await userService.updateUser(user.personalInfo.id, { criteria: newCriteria });
       setMessage('Critère mis à jour avec succès !');
       setTimeout(() => setMessage(''), 3000);
     } catch (err) {
@@ -162,8 +154,8 @@ const ProfileComponent: React.FC = () => {
     if (!user) return;
     
     try {
-      // Transformation des données simplifiées d'EditProfile en structure dna attendue par l'API
-      const newDna = [
+      // Transformation des données simplifiées d'EditProfile en structure criteria attendue par l'API
+      const newCriteria = [
         { label: 'Tranche d\'âge', value: updatedDna.ageRange, type: 'Démographie', color: 'bg-blue-100 text-blue-800' },
         { label: 'Budget', value: updatedDna.monthlyBudget, type: 'Profil', color: 'bg-green-100 text-green-800' },
         { label: 'Phénotype', value: updatedDna.phenotype, type: 'Carnation', color: 'bg-orange-100 text-orange-800' },
@@ -173,9 +165,7 @@ const ProfileComponent: React.FC = () => {
         { label: 'Problématiques', value: updatedDna.skinConcerns.join(', '), type: 'Peau', color: 'bg-red-100 text-red-800' }
       ];
 
-      const updatedUser = await userService.updateUser(user.id, { dna: newDna });
-      setUser(updatedUser);
-      localStorage.setItem('clutch_user', JSON.stringify(updatedUser));
+      await userService.updateUser(user.personalInfo.id, { criteria: newCriteria });
       setIsEditingDna(false);
       setMessage('ADN Beauté mis à jour !');
       setTimeout(() => setMessage(''), 3000);
@@ -207,7 +197,7 @@ const ProfileComponent: React.FC = () => {
         <div className="relative w-56 h-72 md:w-72 md:h-96 bg-gray-100 group flex-shrink-0 border border-gray-100 dark:border-gray-800">
           <img 
             src={avatarUrl} 
-            alt={user.name || 'User'} 
+            alt={user.personalInfo.name || 'User'} 
             className="w-full h-full object-cover filter grayscale hover:grayscale-0 transition-all duration-700"
           />
           <button 
@@ -229,17 +219,17 @@ const ProfileComponent: React.FC = () => {
               </h1>
               <div className="flex flex-col md:flex-row md:items-center gap-4">
                 <p className="text-xl font-bold uppercase tracking-widest text-gray-400">
-                  {user.name || 'Prénom Nom'}
+                  {user.personalInfo.name || 'Prénom Nom'}
                 </p>
                 <span className="hidden md:inline text-gray-200">/</span>
                 <p className="text-xs font-bold uppercase tracking-widest text-gray-400 italic">
-                  {user.location || 'Localisation non définie'}
+                  {user.personalInfo.location || 'Localisation non définie'}
                 </p>
               </div>
             </div>
             
             <div className="flex flex-wrap gap-2 mt-8 md:mt-0 justify-center md:justify-end">
-              {user.badges?.map((badge, i) => (
+              {user.personalInfo.badges?.map((badge, i) => (
                 <span key={i} className="px-4 py-1.5 border border-clutch-coral text-clutch-coral text-[9px] font-black uppercase tracking-[0.2em]">
                   {badge}
                 </span>
@@ -249,7 +239,7 @@ const ProfileComponent: React.FC = () => {
 
           <div className="max-w-2xl text-center md:text-left">
             <p className="text-2xl font-medium leading-relaxed text-gray-600 dark:text-gray-400 font-serif italic">
-              "{user.bio || 'Votre bio apparaîtra ici. Parlez-nous de vos goûts et de votre routine beauté.'}"
+              "{user.personalInfo.bio || 'Votre bio apparaîtra ici. Parlez-nous de vos goûts et de votre routine beauté.'}"
             </p>
           </div>
         </div>
@@ -279,7 +269,7 @@ const ProfileComponent: React.FC = () => {
           <div className="border-t-2 border-clutch-black dark:border-white pt-6">
             <h3 className="font-black text-clutch-black dark:text-white uppercase text-xs tracking-[0.3em] mb-8">Statistiques</h3>
             <div className="grid grid-cols-2 gap-x-8 gap-y-10">
-              {user.stats?.map((stat, i) => (
+              {user.personalInfo.stats?.map((stat, i) => (
                 <div key={i} className="flex flex-col border-l border-gray-100 dark:border-gray-800 pl-4">
                   <span className="text-[9px] text-gray-400 uppercase font-black tracking-widest mb-2">{stat.label}</span>
                   <span className="text-4xl font-black text-clutch-black dark:text-white tracking-tighter">{stat.value}</span>
@@ -349,17 +339,21 @@ const ProfileComponent: React.FC = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
-              {user.dna?.map((item, i) => (
-                <Critere
-                  key={i}
-                  label={item.label}
-                  value={item.value}
-                  type={item.type}
-                  color={item.color}
-                  options={item.options}
-                  onUpdate={(val) => handleCritereUpdate(i, val)}
-                />
-              ))}
+              {user.criteria && user.criteria.criteria && Array.isArray(user.criteria.criteria) ? (
+                user.criteria.criteria.map((item, i) => (
+                  <Critere
+                    key={i}
+                    label={item.label}
+                    value={item.value}
+                    type={item.type}
+                    color={item.color}
+                    options={item.options}
+                    onUpdate={(val) => handleCritereUpdate(i, val)}
+                  />
+                ))
+              ) : (
+                <p className="text-gray-400 italic">Aucun critère défini.</p>
+              )}
             </div>
           )}
         </div>

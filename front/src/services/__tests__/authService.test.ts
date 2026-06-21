@@ -24,16 +24,16 @@ describe('authService', () => {
 
   it('should return current user from store', () => {
     const mockUser = { id: '1', email: 'test@example.com' };
-    userStore.setUser(mockUser as Parameters<typeof userStore.setUser>[0]);
+    userStore.setUser(mockUser);
 
     const user = authService.getCurrentUser();
-    expect(user?.id).toBe(mockUser.id);
-    expect(user?.email).toBe(mockUser.email);
+    expect(user?.personalInfo.id).toBe(mockUser.id);
+    expect(user?.personalInfo.email).toBe(mockUser.email);
   });
 
   it('should logout by clearing store', () => {
     const mockUser = { id: '1', email: 'test@example.com' };
-    userStore.setUser(mockUser as Parameters<typeof userStore.setUser>[0]);
+    userStore.setUser(mockUser);
     authService.logout();
     expect(userStore.getState().user).toBeNull();
     expect(localStorage.getItem('clutch_user')).toBeNull();
