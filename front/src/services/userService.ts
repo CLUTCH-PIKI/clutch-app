@@ -23,10 +23,10 @@ export const userService = {
   },
 
   async updateUser(id: string, updates: Record<string, unknown>): Promise<User> {
-    const response = await fetch(`${API_URL}/users/${id}`, {
+    const response = await fetch(`${API_URL}/users`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(updates),
+      body: JSON.stringify({ id, ...updates }),
     });
     if (!response.ok) {
       const error = await response.json();
