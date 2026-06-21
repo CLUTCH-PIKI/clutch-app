@@ -26,7 +26,7 @@ const ProfileBio: React.FC<ProfileBioProps> = ({ user, onEdit }) => {
               </h1>
               <button 
                 onClick={onEdit}
-                className="md:absolute md:-right-12 p-2 text-gray-400 hover:text-clutch-coral transition-colors"
+                className="md:absolute md:-right-12 p-2 text-gray-400 hover:text-clutch-coral transition-colors clutch-hover-wiggle"
                 title="Modifier le profil"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -46,7 +46,7 @@ const ProfileBio: React.FC<ProfileBioProps> = ({ user, onEdit }) => {
           
           <div className="flex flex-wrap gap-2 mt-8 md:mt-0 justify-center md:justify-end">
             {user.personalInfo.badges?.map((badge, i) => (
-              <span key={i} className="px-4 py-1.5 border border-clutch-coral text-clutch-coral text-[9px] font-black uppercase tracking-[0.2em]">
+              <span key={i} className="px-4 py-1.5 border border-clutch-coral text-clutch-coral text-[9px] font-black uppercase tracking-[0.2em] clutch-hover-wiggle cursor-default">
                 {badge}
               </span>
             ))}

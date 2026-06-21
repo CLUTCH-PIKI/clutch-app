@@ -36,7 +36,7 @@ const EditProfileBio: React.FC<EditProfileBioProps> = ({ user, onSave, onCancel,
         <button 
           type="button"
           onClick={onAvatarEdit}
-          className="absolute -bottom-4 -right-4 bg-clutch-black dark:bg-white p-3 shadow-xl hover:bg-clutch-coral dark:hover:bg-clutch-coral transition-colors z-10"
+          className="absolute -bottom-4 -right-4 bg-clutch-black dark:bg-white p-3 shadow-xl hover:bg-clutch-coral dark:hover:bg-clutch-coral transition-colors z-10 clutch-hover-wiggle"
           title="Modifier la photo"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white dark:text-clutch-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -97,7 +97,7 @@ const EditProfileBio: React.FC<EditProfileBioProps> = ({ user, onSave, onCancel,
           <button 
             type="button"
             onClick={onCancel}
-            className="w-12 h-12 flex items-center justify-center border-2 border-clutch-coral bg-white text-clutch-coral hover:bg-clutch-coral hover:text-white dark:bg-clutch-black transition-all"
+            className="w-12 h-12 flex items-center justify-center border-2 border-clutch-coral bg-white text-clutch-coral hover:bg-clutch-coral hover:text-white dark:bg-clutch-black transition-all clutch-hover-wiggle"
             title="Annuler"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -107,7 +107,7 @@ const EditProfileBio: React.FC<EditProfileBioProps> = ({ user, onSave, onCancel,
           <button 
             type="submit"
             disabled={isSaving}
-            className="w-12 h-12 flex items-center justify-center border-2 border-clutch-blue bg-white text-clutch-blue hover:bg-clutch-blue hover:text-white dark:bg-clutch-black disabled:opacity-50 transition-all"
+            className="w-12 h-12 flex items-center justify-center border-2 border-clutch-blue bg-white text-clutch-blue hover:bg-clutch-blue hover:text-white dark:bg-clutch-black disabled:opacity-50 transition-all clutch-hover-wiggle"
             title="Enregistrer"
           >
             {isSaving ? (

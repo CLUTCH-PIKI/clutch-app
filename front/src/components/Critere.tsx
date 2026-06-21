@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import CritereForm from './CritereForm';
+import ClutchTooltip from './ClutchTooltip';
 
 interface CritereProps {
   label: string;
@@ -15,13 +16,15 @@ const Critere: React.FC<CritereProps> = ({ label, value, type, color, borderColo
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <div className={`relative flex flex-col p-8 bg-white dark:bg-[#1A1A1A] border-2 ${borderColor || 'border-gray-100 dark:border-gray-800'} transition-all group`}>
+    <div className={`relative flex flex-col p-8 bg-white dark:bg-[#1A1A1A] border-2 ${borderColor || 'border-gray-100 dark:border-gray-800'} transition-all group clutch-hover-wiggle`}>
+      <ClutchTooltip text={value} borderColor={borderColor} />
+      
       <span className="text-[9px] text-gray-400 dark:text-gray-500 uppercase font-black tracking-[0.3em] mb-4">{type}</span>
       <h4 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-6">{label}</h4>
       
-      <div className="flex items-end justify-between mt-auto">
-        <span className="text-3xl font-black text-clutch-black dark:text-white uppercase tracking-tighter">{value}</span>
-        <div className={`w-8 h-8 border border-gray-100 dark:border-gray-800 flex items-center justify-center p-1`}>
+      <div className="flex items-end justify-between mt-auto gap-4">
+        <span className="text-3xl font-black text-clutch-black dark:text-white uppercase tracking-tighter break-words line-clamp-2 flex-grow min-w-0" title={value}>{value}</span>
+        <div className={`w-8 h-8 border border-gray-100 dark:border-gray-800 flex items-center justify-center p-1 shrink-0`}>
           <div className={`w-full h-full ${color.split(' ')[0]} opacity-50`}></div>
         </div>
       </div>

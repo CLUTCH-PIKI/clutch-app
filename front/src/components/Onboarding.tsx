@@ -84,7 +84,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ user, onSave, onClose }) => {
   };
 
   return (
-    <div className="bg-white dark:bg-[#1A1A1A] border-2 border-clutch-black dark:border-white w-full max-w-5xl p-10 md:p-16 overflow-y-auto max-h-[90vh]">
+    <div className="bg-white dark:bg-[#1A1A1A] border-2 border-clutch-black dark:border-white w-full max-w-5xl p-10 md:p-16 overflow-y-auto max-h-[90vh] clutch-animate-modal">
       <div className="mb-16 text-center">
         <h2 className="text-5xl md:text-6xl font-black text-clutch-black dark:text-white uppercase tracking-tighter mb-4">Votre ADN beauté</h2>
         <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">Personnalisez votre profil pour des recommandations ultra-précises</p>
@@ -99,7 +99,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ user, onSave, onClose }) => {
               <button
                 key={option}
                 onClick={() => setCriteria({ ...criteria, ageRange: option })}
-                className={`py-4 border-2 font-bold text-xs uppercase tracking-widest transition-all ${
+                className={`py-4 border-2 font-bold text-xs uppercase tracking-widest transition-all clutch-hover-wiggle ${
                   criteria.ageRange === option 
                   ? 'border-clutch-black dark:border-white bg-clutch-black text-white dark:bg-white dark:text-clutch-black' 
                   : 'border-gray-100 dark:border-gray-800 text-gray-400 hover:border-gray-200'
@@ -119,7 +119,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ user, onSave, onClose }) => {
               <div 
                 key={option}
                 onClick={() => setCriteria({ ...criteria, monthlyBudget: option })}
-                className="flex items-center justify-between group cursor-pointer"
+                className="flex items-center justify-between group cursor-pointer clutch-hover-wiggle"
               >
                 <span className={`text-xs font-bold uppercase tracking-widest transition-colors ${criteria.monthlyBudget === option ? 'text-clutch-black dark:text-white' : 'text-gray-400'}`}>Investissement</span>
                 <div className={`flex-grow mx-4 border-b border-dotted ${criteria.monthlyBudget === option ? 'border-clutch-black dark:border-white' : 'border-gray-200'}`}></div>
@@ -137,7 +137,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ user, onSave, onClose }) => {
               <button
                 key={opt}
                 onClick={() => setCriteria({ ...criteria, phenotype: opt })}
-                className="group flex flex-col items-center"
+                className="group flex flex-col items-center clutch-hover-wiggle"
               >
                 <div 
                   className={`w-full aspect-square border-2 mb-2 transition-all ${criteria.phenotype === opt ? 'border-clutch-black dark:border-white p-1' : 'border-transparent group-hover:border-gray-200'}`}
@@ -160,7 +160,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ user, onSave, onClose }) => {
               <button
                 key={option}
                 onClick={() => setCriteria({ ...criteria, hairType: option })}
-                className={`py-4 border-2 font-bold text-xs uppercase tracking-widest transition-all ${
+                className={`py-4 border-2 font-bold text-xs uppercase tracking-widest transition-all clutch-hover-wiggle ${
                   criteria.hairType === option 
                   ? 'border-clutch-black dark:border-white bg-clutch-black text-white dark:bg-white dark:text-clutch-black' 
                   : 'border-gray-100 dark:border-gray-800 text-gray-400 hover:border-gray-200'
@@ -180,7 +180,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ user, onSave, onClose }) => {
               <button
                 key={opt}
                 onClick={() => setCriteria({ ...criteria, hairColor: opt })}
-                className={`flex items-center gap-4 p-4 border-2 transition-all ${
+                className={`flex items-center gap-4 p-4 border-2 transition-all clutch-hover-wiggle ${
                   criteria.hairColor === opt 
                   ? 'border-clutch-black dark:border-white bg-gray-50 dark:bg-gray-900' 
                   : 'border-gray-100 dark:border-gray-800 hover:border-gray-200'
@@ -203,7 +203,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ user, onSave, onClose }) => {
               <button
                 key={option}
                 onClick={() => setCriteria({ ...criteria, makeupStyle: option })}
-                className={`px-8 py-4 border-2 font-bold text-xs uppercase tracking-widest transition-all ${
+                className={`px-8 py-4 border-2 font-bold text-xs uppercase tracking-widest transition-all clutch-hover-wiggle ${
                   criteria.makeupStyle === option 
                   ? 'border-clutch-black dark:border-white bg-clutch-black text-white dark:bg-white dark:text-clutch-black' 
                   : 'border-gray-100 dark:border-gray-800 text-gray-400 hover:border-gray-200'
@@ -223,7 +223,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ user, onSave, onClose }) => {
               <button
                 key={option}
                 onClick={() => toggleSkinConcern(option)}
-                className={`px-6 py-2 border font-black text-[9px] uppercase tracking-[0.2em] transition-all ${
+                className={`px-6 py-2 border font-black text-[9px] uppercase tracking-[0.2em] transition-all clutch-hover-wiggle ${
                   criteria.skinConcerns.includes(option)
                   ? 'border-clutch-coral bg-clutch-coral text-white'
                   : 'border-gray-200 text-gray-400 hover:border-clutch-coral hover:text-clutch-coral'
@@ -244,7 +244,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ user, onSave, onClose }) => {
           <div className="flex gap-6 w-full md:w-auto justify-center md:justify-end">
             <button
               onClick={onClose}
-              className="w-16 h-16 flex items-center justify-center border-2 border-clutch-coral bg-white text-clutch-coral hover:bg-clutch-coral hover:text-white dark:bg-clutch-black transition-all shadow-[4px_4px_0px_0px_rgba(255,90,95,0.3)] active:translate-x-1 active:translate-y-1 active:shadow-none"
+              className="w-16 h-16 flex items-center justify-center border-2 border-clutch-coral bg-white text-clutch-coral hover:bg-clutch-coral hover:text-white dark:bg-clutch-black transition-all shadow-[4px_4px_0px_0px_rgba(255,90,95,0.3)] active:translate-x-1 active:translate-y-1 active:shadow-none clutch-hover-wiggle"
               title="Quitter"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -254,7 +254,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ user, onSave, onClose }) => {
             <button
               onClick={handleSave}
               disabled={loading}
-              className="w-16 h-16 flex items-center justify-center border-2 border-clutch-blue bg-white text-clutch-blue hover:bg-clutch-blue hover:text-white dark:bg-clutch-black disabled:opacity-50 transition-all shadow-[8px_8px_0px_rgba(168,218,220,0.3)] active:translate-x-1 active:translate-y-1 active:shadow-none"
+              className="w-16 h-16 flex items-center justify-center border-2 border-clutch-blue bg-white text-clutch-blue hover:bg-clutch-blue hover:text-white dark:bg-clutch-black disabled:opacity-50 transition-all shadow-[8px_8px_0px_rgba(168,218,220,0.3)] active:translate-x-1 active:translate-y-1 active:shadow-none clutch-hover-wiggle"
               title="Enregistrer"
             >
               {loading ? (

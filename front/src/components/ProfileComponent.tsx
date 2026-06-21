@@ -181,7 +181,7 @@ const ProfileComponent: React.FC = () => {
   }
 
   return (
-    <div className="py-12 max-w-6xl mx-auto px-6">
+    <div className="py-12 max-w-6xl mx-auto px-6 clutch-animate-page">
       {message && (
         <div className={`p-4 fixed top-24 right-6 z-50 border-l-4 shadow-sm animate-in slide-in-from-right duration-300 ${message.startsWith('Erreur') ? 'bg-red-50 border-red-500 text-red-700' : 'bg-green-50 border-green-500 text-green-700'}`}>
           <p className="text-[10px] font-bold uppercase tracking-widest">{message}</p>
@@ -209,16 +209,16 @@ const ProfileComponent: React.FC = () => {
           <div className="border-t-2 border-clutch-black dark:border-white pt-6">
             <h3 className="font-black text-clutch-black dark:text-white uppercase text-xs tracking-[0.3em] mb-8">Navigation</h3>
             <nav className="flex flex-col space-y-4">
-              <a href="#profil" className="text-[11px] font-bold uppercase tracking-widest text-gray-400 hover:text-clutch-coral transition-colors flex items-center justify-between group">
+              <a href="#profil" className="text-[11px] font-bold uppercase tracking-widest text-gray-400 hover:text-clutch-coral transition-colors flex items-center justify-between group clutch-hover-wiggle">
                 Mon profil <span className="opacity-0 group-hover:opacity-100 transition-opacity">→</span>
               </a>
-              <a href="#avis" className="text-[11px] font-bold uppercase tracking-widest text-gray-400 hover:text-clutch-coral transition-colors flex items-center justify-between group">
+              <a href="#avis" className="text-[11px] font-bold uppercase tracking-widest text-gray-400 hover:text-clutch-coral transition-colors flex items-center justify-between group clutch-hover-wiggle">
                 Mes avis <span className="opacity-0 group-hover:opacity-100 transition-opacity">→</span>
               </a>
-              <a href="#commandes" className="text-[11px] font-bold uppercase tracking-widest text-gray-400 hover:text-clutch-coral transition-colors flex items-center justify-between group">
+              <a href="#commandes" className="text-[11px] font-bold uppercase tracking-widest text-gray-400 hover:text-clutch-coral transition-colors flex items-center justify-between group clutch-hover-wiggle">
                 Mes commandes <span className="opacity-0 group-hover:opacity-100 transition-opacity">→</span>
               </a>
-              <a href="#parametres" className="text-[11px] font-bold uppercase tracking-widest text-gray-400 hover:text-clutch-coral transition-colors flex items-center justify-between group">
+              <a href="#parametres" className="text-[11px] font-bold uppercase tracking-widest text-gray-400 hover:text-clutch-coral transition-colors flex items-center justify-between group clutch-hover-wiggle">
                 Paramètres <span className="opacity-0 group-hover:opacity-100 transition-opacity">→</span>
               </a>
             </nav>
@@ -230,11 +230,11 @@ const ProfileComponent: React.FC = () => {
             <div className="space-y-12">
               {/* Evaluations et Mes UGC */}
               <div className="grid grid-cols-2 gap-x-8">
-                <div className="flex flex-col border-l-4 border-clutch-blue pl-4">
+                <div className="flex flex-col border-l-4 border-clutch-blue pl-4 clutch-hover-wiggle cursor-default">
                   <span className="text-[9px] text-gray-400 uppercase font-black tracking-widest mb-2">Evaluations</span>
                   <span className="text-4xl font-black text-clutch-black dark:text-white tracking-tighter">{user.personalInfo.stats?.[0]?.value || 0}</span>
                 </div>
-                <div className="flex flex-col border-l-4 border-clutch-orange pl-4">
+                <div className="flex flex-col border-l-4 border-clutch-orange pl-4 clutch-hover-wiggle cursor-default">
                   <span className="text-[9px] text-gray-400 uppercase font-black tracking-widest mb-2">Mes UGC</span>
                   <span className="text-4xl font-black text-clutch-black dark:text-white tracking-tighter">{user.personalInfo.stats?.[1]?.value || 0}</span>
                 </div>
@@ -242,7 +242,7 @@ const ProfileComponent: React.FC = () => {
 
               {/* Commissions */}
               {user.personalInfo.stats?.[2] && (
-                <div className="flex items-center justify-between border-l-4 border-clutch-black dark:border-white pl-4">
+                <div className="flex items-center justify-between border-l-4 border-clutch-black dark:border-white pl-4 clutch-hover-wiggle cursor-default">
                   <div className="flex flex-col">
                     <span className="text-[9px] text-gray-400 uppercase font-black tracking-widest mb-2">Commissions</span>
                     <span className="text-4xl font-black text-clutch-black dark:text-white tracking-tighter">
@@ -279,7 +279,7 @@ const ProfileComponent: React.FC = () => {
 
           <button 
             onClick={handleLogout}
-            className="w-full py-4 border border-clutch-black dark:border-white text-clutch-black dark:text-white hover:bg-clutch-black hover:text-white dark:hover:bg-white dark:hover:text-clutch-black transition-all font-bold text-[10px] uppercase tracking-[0.3em] flex items-center justify-center"
+            className="w-full py-4 border border-clutch-black dark:border-white text-clutch-black dark:text-white hover:bg-clutch-black hover:text-white dark:hover:bg-white dark:hover:text-clutch-black transition-all font-bold text-[10px] uppercase tracking-[0.3em] flex items-center justify-center clutch-hover-wiggle"
           >
             Déconnexion
           </button>

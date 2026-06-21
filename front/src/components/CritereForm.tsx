@@ -23,7 +23,7 @@ const CritereForm: React.FC<CritereFormProps> = ({ label, currentValue, options,
   };
 
   return (
-    <div className="bg-white dark:bg-[#1A1A1A] border-2 border-clutch-black dark:border-white max-w-lg w-full p-12">
+    <div className="bg-white dark:bg-[#1A1A1A] border-2 border-clutch-black dark:border-white max-w-lg w-full p-12 clutch-animate-modal">
       <div className="flex flex-col">
         <h2 className="text-5xl font-black text-center text-clutch-black dark:text-white mb-4 uppercase tracking-tighter">Modifier</h2>
         <h3 className="text-xl font-bold text-center text-gray-400 mb-12 uppercase tracking-widest">{label}</h3>
@@ -32,13 +32,14 @@ const CritereForm: React.FC<CritereFormProps> = ({ label, currentValue, options,
           {options.map((option) => (
             <label 
               key={option}
-              className={`flex items-center justify-between p-6 border-2 transition-all cursor-pointer group ${
+              className={`flex items-center justify-between p-6 border-2 transition-all cursor-pointer group clutch-hover-wiggle gap-4 ${
                 selected === option 
                 ? 'border-clutch-black dark:border-white bg-white dark:bg-clutch-black shadow-[4px_4px_0px_0px_#1A1A1A] dark:shadow-[4px_4px_0px_0px_#FDFDFD] -translate-x-1 -translate-y-1 z-10' 
                 : 'border-gray-100 dark:border-gray-800 bg-transparent hover:border-clutch-coral'
               }`}
+              title={option}
             >
-              <span className={`text-[11px] font-black uppercase tracking-[0.2em] transition-colors whitespace-normal break-words leading-relaxed ${selected === option ? 'text-clutch-black dark:text-white' : 'text-gray-400'}`}>
+              <span className={`text-[11px] font-black uppercase tracking-[0.2em] transition-colors whitespace-normal break-words leading-relaxed flex-grow min-w-0 line-clamp-3 ${selected === option ? 'text-clutch-black dark:text-white' : 'text-gray-400'}`}>
                 {option}
               </span>
 
@@ -69,7 +70,7 @@ const CritereForm: React.FC<CritereFormProps> = ({ label, currentValue, options,
           <div className="flex justify-center gap-8">
             <button
               onClick={onClose}
-              className="w-16 h-16 flex items-center justify-center border-2 border-clutch-coral bg-white text-clutch-coral hover:bg-clutch-coral hover:text-white dark:bg-clutch-black transition-all shadow-[4px_4px_0px_0px_rgba(255,90,95,0.3)] active:translate-x-1 active:translate-y-1 active:shadow-none"
+              className="w-16 h-16 flex items-center justify-center border-2 border-clutch-coral bg-white text-clutch-coral hover:bg-clutch-coral hover:text-white dark:bg-clutch-black transition-all shadow-[4px_4px_0px_0px_rgba(255,90,95,0.3)] active:translate-x-1 active:translate-y-1 active:shadow-none clutch-hover-wiggle"
               title="Quitter"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -79,7 +80,7 @@ const CritereForm: React.FC<CritereFormProps> = ({ label, currentValue, options,
             <button
               onClick={handleSave}
               disabled={isSaving}
-              className="w-16 h-16 flex items-center justify-center border-2 border-clutch-blue bg-white text-clutch-blue hover:bg-clutch-blue hover:text-white dark:bg-clutch-black disabled:opacity-50 transition-all shadow-[4px_4px_0px_0px_rgba(168,218,220,0.3)] active:translate-x-1 active:translate-y-1 active:shadow-none"
+              className="w-16 h-16 flex items-center justify-center border-2 border-clutch-blue bg-white text-clutch-blue hover:bg-clutch-blue hover:text-white dark:bg-clutch-black disabled:opacity-50 transition-all shadow-[4px_4px_0px_0px_rgba(168,218,220,0.3)] active:translate-x-1 active:translate-y-1 active:shadow-none clutch-hover-wiggle"
               title="Enregistrer"
             >
               {isSaving ? (
