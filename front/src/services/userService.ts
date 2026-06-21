@@ -1,0 +1,37 @@
+export interface User {
+  id: string;
+  email: string;
+  name?: string;
+  bio?: string;
+  preferences?: Record<string, unknown>;
+}
+
+const API_URL = 'http://localhost:3000/api';
+
+export const userService = {
+  async createUser(userData: Record<string, unknown>): Promise<User> {
+    const response = await fetch(`${API_URL}/users`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(userData),
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Failed to create user');
+    }
+    return response.json();
+  },
+
+  async updateUser(id: string, updates: Record<string, unknown>): Promise<User> {
+    const response = await fetch(`${API_URL}/users/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updates),
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Failed to update user');
+    }
+    return response.json();
+  },
+};

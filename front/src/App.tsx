@@ -1,7 +1,28 @@
-import { BrowserRouter as Router, Routes, Route, Link, Outlet } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Link, Outlet, useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 import HomeComponent from './components/HomeComponent'
+import LoginModal from './components/LoginModal'
+import ProfileComponent from './components/ProfileComponent'
+import { authService } from './services/authService'
 
 function Layout() {
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
+  const [user, setUser] = useState(() => authService.getCurrentUser())
+  const navigate = useNavigate()
+
+  const handleLoginClick = () => {
+    if (user) {
+      navigate('/profile')
+    } else {
+      setIsLoginModalOpen(true)
+    }
+  }
+
+  const handleLoginSuccess = () => {
+    setUser(authService.getCurrentUser())
+    window.location.reload()
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <header className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-800">
@@ -15,9 +36,12 @@ function Layout() {
           <Link to="/marques" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">Marques</Link>
           <Link to="/ugc" className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">UGC</Link>
         </nav>
-        <div>
-          <button className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-full font-medium transition-colors">
-            Connexion
+        <div className="flex items-center space-x-4">
+          <button 
+            onClick={handleLoginClick}
+            className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-full font-medium transition-colors"
+          >
+            {user ? 'Mon Profil' : 'Connexion'}
           </button>
         </div>
       </header>
@@ -39,6 +63,12 @@ function Layout() {
           </div>
         </div>
       </footer>
+
+      <LoginModal 
+        isOpen={isLoginModalOpen} 
+        onClose={() => setIsLoginModalOpen(false)} 
+        onSuccess={handleLoginSuccess}
+      />
     </div>
   )
 }
@@ -57,6 +87,7 @@ function App() {
           <Route path="contact" element={<div className="py-20 text-center text-2xl">Contactez-nous</div>} />
           <Route path="legal" element={<div className="py-20 text-center text-2xl">Mentions Légales</div>} />
           <Route path="privacy" element={<div className="py-20 text-center text-2xl">Politique de Confidentialité</div>} />
+          <Route path="profile" element={<ProfileComponent />} />
         </Route>
       </Routes>
     </Router>
