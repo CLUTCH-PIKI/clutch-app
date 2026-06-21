@@ -6,15 +6,16 @@ interface CritereProps {
   value: string;
   type: string;
   color: string;
+  borderColor?: string;
   options?: string[];
   onUpdate: (newValue: string) => Promise<void>;
 }
 
-const Critere: React.FC<CritereProps> = ({ label, value, type, color, options = [], onUpdate }) => {
+const Critere: React.FC<CritereProps> = ({ label, value, type, color, borderColor, options = [], onUpdate }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <div className="relative flex flex-col p-8 bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-gray-800 transition-all hover:border-clutch-coral group">
+    <div className={`relative flex flex-col p-8 bg-white dark:bg-[#1A1A1A] border-2 ${borderColor || 'border-gray-100 dark:border-gray-800'} transition-all group`}>
       <span className="text-[9px] text-gray-400 dark:text-gray-500 uppercase font-black tracking-[0.3em] mb-4">{type}</span>
       <h4 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-6">{label}</h4>
       

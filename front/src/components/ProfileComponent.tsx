@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { authService } from '../services/authService';
 import { userService } from '../services/userService';
-import { type User } from '../store/userStore';
+import { type User, DEFAULT_CRITERIA_OPTIONS } from '../store/userStore';
 import Critere from './Critere';
 import EditProfile from './EditProfile';
 
@@ -13,6 +13,13 @@ interface ProfileLocationState {
 const ProfileComponent: React.FC = () => {
   const location = useLocation();
   const locationState = location.state as ProfileLocationState;
+
+  const CRITERE_BORDERS = [
+    'border-clutch-blue',
+    'border-clutch-coral',
+    'border-clutch-orange',
+    'border-clutch-black dark:border-white'
+  ];
 
   const [user, setUser] = useState<User | null>(() => authService.getCurrentUser());
   const [name, setName] = useState(user?.personalInfo.name || '');
@@ -103,13 +110,55 @@ const ProfileComponent: React.FC = () => {
     try {
       // Transformation des données simplifiées d'EditProfile en structure criteria attendue par l'API
       const newCriteria = [
-        { label: 'Tranche d\'âge', value: updatedDna.ageRange, type: 'Démographie', color: 'bg-blue-100 text-blue-800' },
-        { label: 'Budget', value: updatedDna.monthlyBudget, type: 'Profil', color: 'bg-green-100 text-green-800' },
-        { label: 'Phénotype', value: updatedDna.phenotype, type: 'Carnation', color: 'bg-orange-100 text-orange-800' },
-        { label: 'Type Cheveux', value: updatedDna.hairType, type: 'Cheveux', color: 'bg-purple-100 text-purple-800' },
-        { label: 'Couleur Cheveux', value: updatedDna.hairColor, type: 'Cheveux', color: 'bg-yellow-100 text-yellow-800' },
-        { label: 'Style Maquillage', value: updatedDna.makeupStyle, type: 'Esthétique', color: 'bg-pink-100 text-pink-800' },
-        { label: 'Problématiques', value: updatedDna.skinConcerns.join(', '), type: 'Peau', color: 'bg-red-100 text-red-800' }
+        { 
+          label: 'Tranche d\'âge', 
+          value: updatedDna.ageRange, 
+          type: 'Démographie', 
+          color: 'bg-blue-100 text-blue-800',
+          options: DEFAULT_CRITERIA_OPTIONS["Tranche d'âge"]
+        },
+        { 
+          label: 'Budget', 
+          value: updatedDna.monthlyBudget, 
+          type: 'Profil', 
+          color: 'bg-green-100 text-green-800',
+          options: DEFAULT_CRITERIA_OPTIONS["Budget"]
+        },
+        { 
+          label: 'Phénotype', 
+          value: updatedDna.phenotype, 
+          type: 'Carnation', 
+          color: 'bg-orange-100 text-orange-800',
+          options: DEFAULT_CRITERIA_OPTIONS["Phénotype"]
+        },
+        { 
+          label: 'Type Cheveux', 
+          value: updatedDna.hairType, 
+          type: 'Cheveux', 
+          color: 'bg-purple-100 text-purple-800',
+          options: DEFAULT_CRITERIA_OPTIONS["Type Cheveux"]
+        },
+        { 
+          label: 'Couleur Cheveux', 
+          value: updatedDna.hairColor, 
+          type: 'Cheveux', 
+          color: 'bg-yellow-100 text-yellow-800',
+          options: DEFAULT_CRITERIA_OPTIONS["Couleur Cheveux"]
+        },
+        { 
+          label: 'Style Maquillage', 
+          value: updatedDna.makeupStyle, 
+          type: 'Esthétique', 
+          color: 'bg-pink-100 text-pink-800',
+          options: DEFAULT_CRITERIA_OPTIONS["Style Maquillage"]
+        },
+        { 
+          label: 'Problématiques', 
+          value: updatedDna.skinConcerns.join(', '), 
+          type: 'Peau', 
+          color: 'bg-red-100 text-red-800',
+          options: DEFAULT_CRITERIA_OPTIONS["Problématiques"]
+        }
       ];
 
       await userService.updateUser(user.personalInfo.id, { criteria: newCriteria });
@@ -140,8 +189,8 @@ const ProfileComponent: React.FC = () => {
       )}
 
       {/* Header Full Width - Editorial Style */}
-      <div className="flex flex-col md:flex-row gap-12 mb-20 items-center md:items-start">
-        <div className="relative w-56 h-72 md:w-72 md:h-96 bg-gray-100 group flex-shrink-0 border border-gray-100 dark:border-gray-800">
+      <div className="flex flex-col md:flex-row gap-12 mb-12 items-center md:items-start">
+        <div className="relative w-48 h-64 md:w-60 md:h-80 bg-gray-100 group flex-shrink-0 border border-gray-100 dark:border-gray-800">
           <img 
             src={avatarUrl} 
             alt={user.personalInfo.name || 'User'} 
@@ -161,7 +210,7 @@ const ProfileComponent: React.FC = () => {
         <div className="flex-grow flex flex-col pt-4">
           <div className="flex flex-col md:flex-row md:items-baseline justify-between mb-8 border-b border-gray-100 dark:border-gray-800 pb-8">
             <div className="text-center md:text-left">
-              <h1 className="text-6xl font-black uppercase tracking-tighter text-clutch-black dark:text-white leading-none mb-4">
+              <h1 className="text-5xl font-black uppercase tracking-tighter text-clutch-black dark:text-white leading-none mb-4">
                 Mon Compte
               </h1>
               <div className="flex flex-col md:flex-row md:items-center gap-4">
@@ -185,7 +234,7 @@ const ProfileComponent: React.FC = () => {
           </div>
 
           <div className="max-w-2xl text-center md:text-left">
-            <p className="text-2xl font-medium leading-relaxed text-gray-600 dark:text-gray-400 font-serif italic">
+            <p className="text-lg font-medium leading-relaxed text-gray-600 dark:text-gray-400 font-serif italic">
               "{user.personalInfo.bio || 'Votre bio apparaîtra ici. Parlez-nous de vos goûts et de votre routine beauté.'}"
             </p>
           </div>
@@ -215,13 +264,54 @@ const ProfileComponent: React.FC = () => {
 
           <div className="border-t-2 border-clutch-black dark:border-white pt-6">
             <h3 className="font-black text-clutch-black dark:text-white uppercase text-xs tracking-[0.3em] mb-8">Statistiques</h3>
-            <div className="grid grid-cols-2 gap-x-8 gap-y-10">
-              {user.personalInfo.stats?.map((stat, i) => (
-                <div key={i} className="flex flex-col border-l border-gray-100 dark:border-gray-800 pl-4">
-                  <span className="text-[9px] text-gray-400 uppercase font-black tracking-widest mb-2">{stat.label}</span>
-                  <span className="text-4xl font-black text-clutch-black dark:text-white tracking-tighter">{stat.value}</span>
+            
+            <div className="space-y-12">
+              {/* Evaluations et Mes UGC */}
+              <div className="grid grid-cols-2 gap-x-8">
+                <div className="flex flex-col border-l-4 border-clutch-blue pl-4">
+                  <span className="text-[9px] text-gray-400 uppercase font-black tracking-widest mb-2">Evaluations</span>
+                  <span className="text-4xl font-black text-clutch-black dark:text-white tracking-tighter">{user.personalInfo.stats?.[0]?.value || 0}</span>
                 </div>
-              ))}
+                <div className="flex flex-col border-l-4 border-clutch-orange pl-4">
+                  <span className="text-[9px] text-gray-400 uppercase font-black tracking-widest mb-2">Mes UGC</span>
+                  <span className="text-4xl font-black text-clutch-black dark:text-white tracking-tighter">{user.personalInfo.stats?.[1]?.value || 0}</span>
+                </div>
+              </div>
+
+              {/* Commissions */}
+              {user.personalInfo.stats?.[2] && (
+                <div className="flex items-center justify-between border-l-4 border-clutch-black dark:border-white pl-4">
+                  <div className="flex flex-col">
+                    <span className="text-[9px] text-gray-400 uppercase font-black tracking-widest mb-2">Commissions</span>
+                    <span className="text-4xl font-black text-clutch-black dark:text-white tracking-tighter">
+                      {Number(user.personalInfo.stats[2].value).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €
+                    </span>
+                  </div>
+                  <div className="text-clutch-black dark:text-white pr-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                  </div>
+                </div>
+              )}
+
+              {/* Progression Loop */}
+              {user.personalInfo.stats?.[3] && (
+                <div className="border-l-4 border-clutch-coral pl-4">
+                  <div className="flex justify-between items-end mb-4">
+                    <span className="text-[9px] text-gray-400 uppercase font-black tracking-widest">Progression loop</span>
+                    <span className="text-[10px] font-black text-clutch-black dark:text-white">
+                      {user.personalInfo.stats[3].value}%
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-100 dark:bg-gray-800 h-4 border border-clutch-black dark:border-white">
+                    <div 
+                      className="bg-clutch-coral h-full transition-all duration-1000" 
+                      style={{ width: `${user.personalInfo.stats[3].value}%` }}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -294,6 +384,7 @@ const ProfileComponent: React.FC = () => {
                     value={item.value}
                     type={item.type}
                     color={item.color}
+                    borderColor={CRITERE_BORDERS[i % CRITERE_BORDERS.length]}
                     options={item.options}
                     onUpdate={(val) => handleCritereUpdate(i, val)}
                   />

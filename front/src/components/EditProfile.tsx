@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { type User } from '../store/userStore';
+import { type User, DEFAULT_CRITERIA_OPTIONS, COLOR_MAP } from '../store/userStore';
 
 interface CriteriaData {
   ageRange: string;
@@ -22,12 +22,12 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, onSave, onClose }) => {
   const [criteria, setCriteria] = useState<CriteriaData>(() => {
     const defaultCriteria = {
       ageRange: '25-34',
-      monthlyBudget: '50€ - 100€',
-      phenotype: 'Médium',
+      monthlyBudget: 'Regulier 50-150',
+      phenotype: 'Mat',
       hairType: 'Bouclés',
       hairColor: 'Châtain',
       makeupStyle: 'Naturel',
-      skinConcerns: ['Hydratation']
+      skinConcerns: ['Mixte']
     };
     
     const userCriteria = user.criteria.criteria;
@@ -55,25 +55,13 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, onSave, onClose }) => {
     return { ...defaultCriteria }; 
   });
 
-  const ageOptions = ['18-24', '25-34', '35-44', '45+'];
-  const budgetOptions = ['< 50€', '50€ - 100€', '100€ - 200€', '> 200€'];
-  const phenotypeOptions = [
-    { name: 'Très Clair', color: '#FAD4D4' },
-    { name: 'Clair', color: '#F7C197' },
-    { name: 'Médium', color: '#D2B48C' },
-    { name: 'Mat', color: '#8B4513' },
-    { name: 'Foncé', color: '#5D3A1A' }
-  ];
-  const hairTypeOptions = ['Raides', 'Ondulés', 'Bouclés', 'Crépus'];
-  const hairColorOptions = [
-    { name: 'Blond', color: '#FAF0BE' },
-    { name: 'Châtain', color: '#8B4513' },
-    { name: 'Roux', color: '#D2691E' },
-    { name: 'Brun', color: '#2C1B18' },
-    { name: 'Noir', color: '#000000' }
-  ];
-  const makeupOptions = ['Minimaliste', 'Naturel', 'Sophistiqué', 'Artistique'];
-  const skinConcernOptions = ['Hydratation', 'Anti-âge', 'Éclat', 'Imperfections', 'Sensibilité', 'Taches', 'Pores'];
+  const ageOptions = DEFAULT_CRITERIA_OPTIONS["Tranche d'âge"];
+  const budgetOptions = DEFAULT_CRITERIA_OPTIONS["Budget"];
+  const phenotypeOptions = DEFAULT_CRITERIA_OPTIONS["Phénotype"];
+  const hairTypeOptions = DEFAULT_CRITERIA_OPTIONS["Type Cheveux"];
+  const hairColorOptions = DEFAULT_CRITERIA_OPTIONS["Couleur Cheveux"];
+  const makeupOptions = DEFAULT_CRITERIA_OPTIONS["Style Maquillage"];
+  const skinConcernOptions = DEFAULT_CRITERIA_OPTIONS["Problématiques"];
 
   const toggleSkinConcern = (concern: string) => {
     setCriteria(prev => ({
@@ -144,20 +132,20 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, onSave, onClose }) => {
         {/* Phénotype */}
         <section>
           <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-clutch-coral mb-6">Phénotype</h3>
-          <div className="grid grid-cols-3 sm:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             {phenotypeOptions.map(opt => (
               <button
-                key={opt.name}
-                onClick={() => setCriteria({ ...criteria, phenotype: opt.name })}
+                key={opt}
+                onClick={() => setCriteria({ ...criteria, phenotype: opt })}
                 className="group flex flex-col items-center"
               >
                 <div 
-                  className={`w-full aspect-square border-2 mb-2 transition-all ${criteria.phenotype === opt.name ? 'border-clutch-black dark:border-white p-1' : 'border-transparent group-hover:border-gray-200'}`}
+                  className={`w-full aspect-square border-2 mb-2 transition-all ${criteria.phenotype === opt ? 'border-clutch-black dark:border-white p-1' : 'border-transparent group-hover:border-gray-200'}`}
                 >
-                  <div className="w-full h-full" style={{ backgroundColor: opt.color }}></div>
+                  <div className="w-full h-full" style={{ backgroundColor: COLOR_MAP[opt] }}></div>
                 </div>
-                <span className={`text-[9px] font-black uppercase tracking-widest ${criteria.phenotype === opt.name ? 'text-clutch-black dark:text-white' : 'text-gray-400'}`}>
-                  {opt.name}
+                <span className={`text-[9px] font-black uppercase tracking-widest ${criteria.phenotype === opt ? 'text-clutch-black dark:text-white' : 'text-gray-400'}`}>
+                  {opt}
                 </span>
               </button>
             ))}
@@ -190,17 +178,17 @@ const EditProfile: React.FC<EditProfileProps> = ({ user, onSave, onClose }) => {
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-6">
             {hairColorOptions.map(opt => (
               <button
-                key={opt.name}
-                onClick={() => setCriteria({ ...criteria, hairColor: opt.name })}
+                key={opt}
+                onClick={() => setCriteria({ ...criteria, hairColor: opt })}
                 className={`flex items-center gap-4 p-4 border-2 transition-all ${
-                  criteria.hairColor === opt.name 
+                  criteria.hairColor === opt 
                   ? 'border-clutch-black dark:border-white bg-gray-50 dark:bg-gray-900' 
                   : 'border-gray-100 dark:border-gray-800 hover:border-gray-200'
                 }`}
               >
-                <div className="w-6 h-6 shrink-0" style={{ backgroundColor: opt.color }}></div>
-                <span className={`text-[10px] font-bold uppercase tracking-widest ${criteria.hairColor === opt.name ? 'text-clutch-black dark:text-white' : 'text-gray-400'}`}>
-                  {opt.name}
+                <div className="w-6 h-6 shrink-0" style={{ backgroundColor: COLOR_MAP[opt] }}></div>
+                <span className={`text-[10px] font-bold uppercase tracking-widest ${criteria.hairColor === opt ? 'text-clutch-black dark:text-white' : 'text-gray-400'}`}>
+                  {opt}
                 </span>
               </button>
             ))}

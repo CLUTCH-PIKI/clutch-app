@@ -11,7 +11,7 @@ export interface User {
   avatarUrl?: string;
   badges?: string[];
   stats?: { label: string; value: number | string }[];
-  criteria?: Record<string, unknown> | any[];
+  criteria?: Record<string, unknown> | { label: string; value: string; type?: string; color: string; options?: string[] }[];
   preferences?: Record<string, unknown>;
   created_at?: string;
   updated_at?: string;
@@ -43,6 +43,7 @@ export class UserRepository {
 
   static findByEmail(email: string): User | null {
     const stmt = db.prepare('SELECT * FROM users WHERE email = ?');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const user = stmt.get(email) as any;
     if (!user) return null;
     return {
@@ -56,6 +57,7 @@ export class UserRepository {
 
   static findById(id: string): User | null {
     const stmt = db.prepare('SELECT * FROM users WHERE id = ?');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const user = stmt.get(id) as any;
     if (!user) return null;
     return {
