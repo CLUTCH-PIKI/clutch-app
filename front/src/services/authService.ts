@@ -1,4 +1,4 @@
-import { User } from './userService';
+import type { User } from './userService';
 
 const API_URL = 'http://localhost:3000/api';
 const AUTH_KEY = 'clutch_user';

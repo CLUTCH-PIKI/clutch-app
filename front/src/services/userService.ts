@@ -3,6 +3,18 @@ export interface User {
   email: string;
   name?: string;
   bio?: string;
+  location?: string;
+  avatarUrl?: string;
+  badges?: string[];
+  stats?: {
+    label: string;
+    value: number | string;
+  }[];
+  dna?: {
+    label: string;
+    value: string;
+    color: string;
+  }[];
   preferences?: Record<string, unknown>;
 }
 
