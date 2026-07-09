@@ -42,27 +42,30 @@ Environment variables are managed via `.env.{environment}` files in each workspa
 ### Deployment
 The project is configured for deployment on **Railway**.
 
-#### Railway Configuration
-The project is designed to be deployed as **two separate services** on Railway from this single repository:
+#### Railway Configuration (CRITICAL)
+The project MUST be deployed as **two separate services** on Railway to function correctly:
 
 1.  **API Service**:
-    *   **Root Directory**: Set to `api` in Railway Settings.
-    *   **Config**: Uses `api/railway.json`.
-    *   **Persistence**: Ensure you create a volume named `sqlite-data` and mount it to `/app/data` (as defined in `api/railway.json`).
+    *   **Settings > Root Directory**: Set to `api`.
+    *   **Settings > Public Networking**: Generate a domain (e.g., `api-clutch.up.railway.app`).
+    *   **Settings > Variables**:
+        *   `DATABASE_PATH`: `/app/data/clutch.db` (should match `api/railway.json`).
+        *   `NEXT_PUBLIC_APP_URL`: The URL of your **Front** service.
+    *   **Volumes**: Create a volume named `sqlite-data` and mount it to `/app/data`.
+
 2.  **Front Service**:
-    *   **Root Directory**: Set to `front` in Railway Settings.
-    *   **Config**: Uses `front/railway.json`.
+    *   **Settings > Root Directory**: Set to `front`.
+    *   **Settings > Public Networking**: Generate a domain (e.g., `clutch.up.railway.app`).
+    *   **Settings > Variables**:
+        *   `VITE_API_URL`: The URL of your **API** service + `/api` (e.g., `https://api-clutch.up.railway.app/api`).
 
 #### Why two services?
-By default, Railway might try to deploy the whole repository as one app if it finds a root `package.json`. However, since the API (Next.js) and Front (Vite) need to bind to different ports, they must be separate services to be reachable via their own public URLs.
+Railway services bind to the `$PORT` environment variable. In a monorepo, if you deploy as one service, only one process can bind to the port. Splitting them into two services allows each to have its own port and public URL.
 
-#### Accessing the App
-After deploying both services:
-1.  Go to your **Railway Dashboard**.
-2.  Select your **Front** service. In **Settings > Public Networking**, find your URL (e.g., `clutch-front.up.railway.app`).
-3.  Select your **API** service. In **Settings > Public Networking**, find your URL (e.g., `clutch-api.up.railway.app`).
-4.  **Crucial**: In the **Front** service **Variables**, update `VITE_API_URL` to `https://<your-api-url>/api`.
-5.  In the **API** service **Variables**, update `NEXT_PUBLIC_APP_URL` to `https://<your-front-url>`.
+#### Troubleshooting 502 Errors
+- **Health Checks**: The API uses `/health` and the Front uses `/` for health checks. Ensure these are configured in the Railway dashboard if you are not using the provided `railway.json` files.
+- **Port Binding**: Ensure your services are listening on `0.0.0.0` and the port provided by Railway (`$PORT`). This is already handled in the `package.json` start scripts.
+- **Database**: If the API fails to start, check the logs for database initialization errors. The app will fallback to an in-memory database if it cannot write to the volume, to prevent 502s.
 
 #### Legacy Deployment
 Netlify configurations are still present but Railway is the recommended platform for this monorepo.

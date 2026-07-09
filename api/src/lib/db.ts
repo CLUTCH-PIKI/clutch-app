@@ -7,13 +7,27 @@ const dbPath = process.env.DATABASE_PATH || path.resolve(process.cwd(), 'clutch.
 
 // Ensure directory exists to avoid crash if /data or other path is missing
 const dbDir = path.dirname(dbPath);
+console.log(`Checking database directory: ${dbDir}`);
 if (!fs.existsSync(dbDir)) {
   console.log(`Creating database directory: ${dbDir}`);
-  fs.mkdirSync(dbDir, { recursive: true });
+  try {
+    fs.mkdirSync(dbDir, { recursive: true });
+  } catch (err) {
+    console.error(`Failed to create database directory: ${err}`);
+  }
 }
 
 console.log(`Initializing database at: ${dbPath}`);
-const db = new Database(dbPath);
+let db;
+try {
+  db = new Database(dbPath);
+  console.log('Database initialized successfully');
+} catch (err) {
+  console.error(`Failed to initialize database: ${err}`);
+  // Fallback to in-memory if persistent fails, to avoid 502
+  console.log('Falling back to in-memory database');
+  db = new Database(':memory:');
+}
 
 // Initialize database schema
 db.exec(`
