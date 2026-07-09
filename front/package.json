@@ -12,7 +12,7 @@
     "build:staging": "tsc -b && vite build --mode staging",
     "build:prod": "tsc -b && vite build --mode production",
     "lint": "eslint .",
-    "start": "serve -s dist -l $PORT",
+    "start": "node -e \"const p=process.env.PORT||4000; require('child_process').spawn('npx', ['serve', '-s', 'dist', '-l', p], {stdio: 'inherit', shell: true})\"",
     "test": "vitest run",
     "test:watch": "vitest",
     "preview": "vite preview"
