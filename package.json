@@ -12,7 +12,6 @@
     "build": "concurrently \"npm run build --workspace=api\" \"npm run build --workspace=front\"",
     "build:staging": "concurrently \"npm run build --workspace=api\" \"npm run build:staging --workspace=front\"",
     "build:prod": "concurrently \"npm run build --workspace=api\" \"npm run build:prod --workspace=front\"",
-    "start": "concurrently \"npm run start --workspace=api\" \"npm run start --workspace=front\"",
     "lint": "npm run lint --workspaces",
     "test": "npm run test --workspaces"
   },

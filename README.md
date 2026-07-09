@@ -43,17 +43,26 @@ Environment variables are managed via `.env.{environment}` files in each workspa
 The project is configured for deployment on **Railway**.
 
 #### Railway Configuration
-Each workspace has its own `railway.json` file for independent deployment:
-- **API**: Configured with persistent SQLite storage using Railway Volumes. Ensure you create a volume named `sqlite-data` and mount it to `/data` in the Railway dashboard.
-- **Front**: Configured as a static site using `npx serve`.
+The project is designed to be deployed as **two separate services** on Railway from this single repository:
+
+1.  **API Service**:
+    *   **Root Directory**: Set to `api` in Railway Settings.
+    *   **Config**: Uses `api/railway.json`.
+    *   **Persistence**: Ensure you create a volume named `sqlite-data` and mount it to `/app/data` (as defined in `api/railway.json`).
+2.  **Front Service**:
+    *   **Root Directory**: Set to `front` in Railway Settings.
+    *   **Config**: Uses `front/railway.json`.
+
+#### Why two services?
+By default, Railway might try to deploy the whole repository as one app if it finds a root `package.json`. However, since the API (Next.js) and Front (Vite) need to bind to different ports, they must be separate services to be reachable via their own public URLs.
 
 #### Accessing the App
-After a successful deployment on Railway:
-1. Go to your **Railway Dashboard**.
-2. Select your project and click on the **Front** service.
-3. In the **Settings** tab, look for the **Public Networking** section to find your generated URL (e.g., `clutch-front.up.railway.app`).
-4. Repeat for the **API** service to find its public URL.
-5. **Crucial**: Ensure you set the `VITE_API_URL` environment variable in your Front-end service settings to point to your API's public URL (including the `/api` suffix if applicable).
+After deploying both services:
+1.  Go to your **Railway Dashboard**.
+2.  Select your **Front** service. In **Settings > Public Networking**, find your URL (e.g., `clutch-front.up.railway.app`).
+3.  Select your **API** service. In **Settings > Public Networking**, find your URL (e.g., `clutch-api.up.railway.app`).
+4.  **Crucial**: In the **Front** service **Variables**, update `VITE_API_URL` to `https://<your-api-url>/api`.
+5.  In the **API** service **Variables**, update `NEXT_PUBLIC_APP_URL` to `https://<your-front-url>`.
 
 #### Legacy Deployment
 Netlify configurations are still present but Railway is the recommended platform for this monorepo.
