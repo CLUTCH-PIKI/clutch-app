@@ -9,7 +9,7 @@
     "dev": "concurrently \"npm run dev --workspace=api\" \"npm run dev --workspace=front\"",
     "dev:api": "npm run dev --workspace=api",
     "dev:front": "npm run dev --workspace=front",
-    "build": "concurrently \"npm run build --workspace=api\" \"npm run build --workspace=front\"",
+    "build": "npm run build --workspace=front && npm run build --workspace=api && node copy-front-to-api.js",
     "build:staging": "concurrently \"npm run build --workspace=api\" \"npm run build:staging --workspace=front\"",
     "build:prod": "concurrently \"npm run build --workspace=api\" \"npm run build:prod --workspace=front\"",
     "start": "node -e \"require('child_process').spawn('npm', ['start'], {cwd: 'api', stdio: 'inherit', shell: true})\"",
@@ -21,6 +21,7 @@
     "front"
   ],
   "dependencies": {
-    "concurrently": "^9.1.2"
+    "concurrently": "^9.1.2",
+    "fs-extra": "^11.3.0"
   }
 }
