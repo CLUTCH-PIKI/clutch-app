@@ -12,7 +12,7 @@
     "build": "npm run build --workspace=front && npm run build --workspace=api && node copy-front-to-api.js",
     "build:staging": "concurrently \"npm run build --workspace=api\" \"npm run build:staging --workspace=front\"",
     "build:prod": "concurrently \"npm run build --workspace=api\" \"npm run build:prod --workspace=front\"",
-    "start": "node -e \"require('child_process').spawn('npm', ['start'], {cwd: 'api', stdio: 'inherit', shell: true})\"",
+    "start": "npm start --prefix api",
     "lint": "npm run lint --workspaces",
     "test": "npm run test --workspaces"
   },
