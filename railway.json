@@ -5,9 +5,12 @@
     "buildCommand": "npm install && npm run build"
   },
   "deploy": {
-    "startCommand": "node api/start-railway.js",
+    "startCommand": "node api/.next/standalone/api/server.js",
     "healthcheckPath": "/health",
     "healthcheckTimeout": 100,
-    "restartPolicyType": "ON_FAILURE"
+    "restartPolicyType": "ON_FAILURE",
+    "env": {
+      "HOSTNAME": "0.0.0.0"
+    }
   }
 }

@@ -5,7 +5,7 @@
     "buildCommand": "cd .. && npm install && npm run build"
   },
   "deploy": {
-    "startCommand": "node start-railway.js",
+    "startCommand": "node .next/standalone/api/server.js",
     "healthcheckPath": "/health",
     "healthcheckTimeout": 100,
     "restartPolicyType": "ON_FAILURE",
@@ -16,7 +16,8 @@
       }
     ],
     "env": {
-      "DATABASE_PATH": "/app/data/clutch.db"
+      "DATABASE_PATH": "/app/data/clutch.db",
+      "HOSTNAME": "0.0.0.0"
     }
   }
 }
