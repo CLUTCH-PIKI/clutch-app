@@ -40,9 +40,25 @@ The project uses different branches for environments:
 Environment variables are managed via `.env.{environment}` files in each workspace.
 
 ### Deployment
-Both apps are configured for deployment on **Netlify**.
-- **Front**: Uses `front/netlify.toml` (Vite SPA configuration).
-- **API**: Uses `api/netlify.toml` (Next.js with Netlify plugin).
+The project is configured for deployment on **Railway**.
+
+#### Railway Configuration
+Each workspace has its own `railway.json` file for independent deployment:
+- **API**: Configured with persistent SQLite storage using Railway Volumes. Ensure you create a volume named `sqlite-data` and mount it to `/data` in the Railway dashboard.
+- **Front**: Configured as a static site using `npx serve`.
+
+#### Accessing the App
+After a successful deployment on Railway:
+1. Go to your **Railway Dashboard**.
+2. Select your project and click on the **Front** service.
+3. In the **Settings** tab, look for the **Public Networking** section to find your generated URL (e.g., `clutch-front.up.railway.app`).
+4. Repeat for the **API** service to find its public URL.
+5. **Crucial**: Ensure you set the `VITE_API_URL` environment variable in your Front-end service settings to point to your API's public URL (including the `/api` suffix if applicable).
+
+#### Legacy Deployment
+Netlify configurations are still present but Railway is the recommended platform for this monorepo.
+- **Front**: Uses `front/netlify.toml`.
+- **API**: Uses `api/netlify.toml`.
 
 ### Utility Commands
 - `npm run dev:api`: Launch only the API.
