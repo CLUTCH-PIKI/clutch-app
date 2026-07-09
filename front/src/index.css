@@ -1,20 +1,58 @@
 @import "tailwindcss";
 
+@theme {
+  --color-clutch-blue: #A8DADC;
+  --color-clutch-orange: #FFB347;
+  --color-clutch-beige: #F5F5DC;
+  --color-clutch-coral: #FF5A5F;
+  --color-clutch-black: #1A1A1A;
+  --color-clutch-white: #FDFDFD;
+  
+  --font-editorial: "Inter", "Helvetica Neue", "Arial", sans-serif;
+
+  --animate-zoom-in: zoom-in 0.3s ease-out;
+  --animate-slide-fade: slide-fade 0.5s ease-out;
+  --animate-wiggle: wiggle 0.3s ease-in-out;
+
+  @keyframes zoom-in {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  @keyframes slide-fade {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes wiggle {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    25% { transform: translateY(-2px) rotate(-1deg); }
+    75% { transform: translateY(-2px) rotate(1deg); }
+  }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 12s linear infinite;
+}
+
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --accent: #aa3bff;
+  --text: #1A1A1A;
+  --text-h: #000000;
+  --bg: #FDFDFD;
+  --border: #E0E0E0;
+  --accent: #FF5A5F;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --accent: #c084fc;
+    --text: #F3F4F6;
+    --text-h: #FFFFFF;
+    --bg: #1A1A1A;
+    --border: #333333;
+    --accent: #FF5A5F;
   }
 }
 
@@ -22,11 +60,70 @@ body {
   margin: 0;
   background-color: var(--bg);
   color: var(--text);
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: var(--font-editorial);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-h);
+  letter-spacing: -0.02em;
+}
+
+.clutch-card {
+  @apply bg-white dark:bg-[#242424] border border-gray-200 dark:border-gray-800 rounded-none transition-all duration-300;
+}
+
+.clutch-button-primary {
+  @apply bg-clutch-coral text-white px-8 py-3 font-bold uppercase tracking-widest text-xs border border-clutch-coral hover:bg-white hover:text-clutch-coral transition-all duration-300 hover:animate-wiggle;
+}
+
+.clutch-button-secondary {
+  @apply bg-transparent text-clutch-black dark:text-white px-8 py-3 font-bold uppercase tracking-widest text-xs border border-clutch-black dark:border-white hover:bg-clutch-black hover:text-white dark:hover:bg-white dark:hover:text-clutch-black transition-all duration-300 hover:animate-wiggle;
+}
+
+/* Animations Globales Clutch */
+.clutch-animate-modal {
+  @apply animate-zoom-in;
+}
+
+.clutch-animate-page {
+  @apply animate-slide-fade;
+}
+
+.clutch-hover-wiggle {
+  @apply transition-all duration-300 hover:animate-wiggle;
 }
 
 #root {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+/* Tooltip Styles */
+.clutch-tooltip {
+  @apply absolute bottom-full left-1/2 -translate-x-1/2 mb-4 px-4 py-2 text-[10px] font-black uppercase tracking-widest invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-300 z-50 whitespace-pre-wrap break-words overflow-hidden border-2 shadow-xl pointer-events-none;
+  max-width: 180px;
+  max-height: 80px;
+}
+
+.clutch-tooltip::after {
+  content: '';
+  @apply absolute top-full left-1/2 -translate-x-1/2 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px];
+}
+
+.clutch-tooltip-prompteur {
+  @apply inline-block w-full;
+}
+
+.group:hover .clutch-tooltip-prompteur.animate {
+  animation: prompteur 4s ease-in-out infinite alternate;
+}
+
+@keyframes prompteur {
+  0% { transform: translateY(0); }
+  20% { transform: translateY(0); }
+  80% { transform: translateY(calc(-100% + 60px)); } 
+  100% { transform: translateY(calc(-100% + 60px)); }
 }

@@ -19,3 +19,9 @@ Clutch est une plateforme d'opinion granulaire et d'assistance promotionnelle co
     - Les tests doivent être valides et passer (`npm test`).
     - Le code doit être conforme aux règles de lint (`npm run lint`).
     - La sincérité et la fiabilité des avis centralisés doivent être garanties par des validations rigoureuses.
+
+- Identité Visuelle : Style minimaliste éditorial/magazine.
+- Typographie : Hiérarchie très forte, police sans-serif neo-grotesque (Inter), majuscules et tracking large pour les labels.
+- Design : Flat design premium, bordures fines (1px ou 2px), pas ou peu d'ombres, coins carrés ou très légèrement arrondis (sauf exceptions spécifiques).
+- Palette : Bleu pastel (#A8DADC), orange doux (#FFB347), beige (#F5F5DC), rose corail (#FF5A5F), noir doux (#1A1A1A), blanc cassé (#FDFDFD).
+- Principes : Espacement généreux (whitespace), alignements rigoureux, contraste fort entre les titres massifs et les petits labels.
