@@ -4,7 +4,7 @@ const host = '0.0.0.0';
 
 console.log(`Starting Next.js on ${host}:${port}`);
 
-const next = spawn('npx', ['next', 'start', '-p', port.toString(), '-H', host], {
+const next = spawn('./node_modules/.bin/next', ['start', '-p', port.toString(), '-H', host], {
   stdio: 'inherit',
   shell: true
 });
