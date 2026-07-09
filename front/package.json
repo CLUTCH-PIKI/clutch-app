@@ -12,7 +12,7 @@
     "build:staging": "tsc -b && vite build --mode staging",
     "build:prod": "tsc -b && vite build --mode production",
     "lint": "eslint .",
-    "start": "serve -s dist -l $PORT",
+    "start": "serve -s dist -l ${PORT:-4000}",
     "test": "vitest run",
     "test:watch": "vitest",
     "preview": "vite preview"

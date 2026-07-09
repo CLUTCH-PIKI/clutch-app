@@ -11,12 +11,12 @@
     "restartPolicyType": "ON_FAILURE",
     "volumes": [
       {
-        "mountPath": "/data",
+        "mountPath": "/app/data",
         "name": "sqlite-data"
       }
     ],
     "env": {
-      "DATABASE_PATH": "/data/clutch.db"
+      "DATABASE_PATH": "/app/data/clutch.db"
     }
   }
 }
