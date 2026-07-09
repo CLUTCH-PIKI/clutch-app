@@ -6,7 +6,9 @@
   },
   "deploy": {
     "startCommand": "npm run start",
-    "healthcheckPath": "/api/users",
+    "healthcheckPath": "/",
+    "healthcheckTimeout": 100,
+    "restartPolicyType": "ON_FAILURE",
     "volumes": [
       {
         "mountPath": "/data",

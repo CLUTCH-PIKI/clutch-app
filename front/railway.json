@@ -5,6 +5,9 @@
     "buildCommand": "npm install && npm run build:staging"
   },
   "deploy": {
-    "startCommand": "npx serve -s dist -l $PORT"
+    "startCommand": "npm run start",
+    "healthcheckPath": "/",
+    "healthcheckTimeout": 100,
+    "restartPolicyType": "ON_FAILURE"
   }
 }
