@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "next dev -p 3000",
     "build": "next build",
-    "start": "next start -p $PORT -H 0.0.0.0",
+    "start": "node -e \"const p=process.env.PORT||3000; require('child_process').spawn('npx', ['next', 'start', '-p', p, '-H', '0.0.0.0'], {stdio: 'inherit', shell: true})\"",
     "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest"
