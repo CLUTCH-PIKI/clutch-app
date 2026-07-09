@@ -18,16 +18,18 @@ if (!fs.existsSync(dbDir)) {
 }
 
 console.log(`Initializing database at: ${dbPath}`);
-let db;
-try {
-  db = new Database(dbPath);
-  console.log('Database initialized successfully');
-} catch (err) {
-  console.error(`Failed to initialize database: ${err}`);
-  // Fallback to in-memory if persistent fails, to avoid 502
-  console.log('Falling back to in-memory database');
-  db = new Database(':memory:');
-}
+const db = (() => {
+  try {
+    const d = new Database(dbPath);
+    console.log('Database initialized successfully');
+    return d;
+  } catch (err) {
+    console.error(`Failed to initialize database: ${err}`);
+    // Fallback to in-memory if persistent fails, to avoid 502
+    console.log('Falling back to in-memory database');
+    return new Database(':memory:');
+  }
+})();
 
 // Initialize database schema
 db.exec(`
