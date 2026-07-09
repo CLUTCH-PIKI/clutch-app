@@ -1,7 +1,8 @@
 import Database from 'better-sqlite3';
 import path from 'path';
 
-const dbPath = path.resolve(process.cwd(), 'clutch.db');
+// Support Railway Volumes or local development
+const dbPath = process.env.DATABASE_PATH || path.resolve(process.cwd(), 'clutch.db');
 const db = new Database(dbPath);
 
 // Initialize database schema

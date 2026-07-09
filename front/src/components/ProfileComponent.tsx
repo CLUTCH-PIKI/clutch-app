@@ -304,7 +304,7 @@ const ProfileComponent: React.FC = () => {
                 key={i}
                 label={item.label}
                 value={item.value}
-                type={item.type}
+                type={item.type || 'ADN'}
                 color={item.color}
                 borderColor={CRITERE_BORDERS[i % CRITERE_BORDERS.length]}
                 options={item.options}

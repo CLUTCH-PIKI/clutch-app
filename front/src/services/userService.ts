@@ -1,6 +1,7 @@
 import { userStore } from '../store/userStore';
 
-const API_URL = 'http://localhost:3000/api';
+// Use the environment variable, falling back to localhost for dev
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 export const userService = {
   async createUser(userData: Record<string, unknown>): Promise<Record<string, unknown>> {
